@@ -3,1121 +3,1231 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>永和物産 食品展示会 2026 — 来場者事前登録</title>
+<title>永和物産 食品展示会 2026 - QR受付システム</title>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-/* ===== CSS変数 ===== */
 :root {
-  --navy:       #0d1f5c;
-  --navy-mid:   #1a3a9e;
-  --navy-light: #2a4aad;
-  --gold:       #c8a84b;
-  --gold-light: #e8cc80;
-  --gold-pale:  #f7f0dc;
-  --cream:      #faf7f0;
-  --white:      #ffffff;
-  --text:       #1a1a2e;
-  --text-mid:   #3a3a5a;
-  --text-light: #6b6b8a;
-  --border:     #ddd5be;
-  --success:    #1a6e35;
-  --success-bg: #e8f7ed;
-  --error:      #8b1a1a;
-  --error-bg:   #fdf0f0;
-  --radius-sm:  8px;
-  --radius:     14px;
-  --radius-lg:  20px;
-  --shadow-sm:  0 2px 8px rgba(13,31,92,0.08);
-  --shadow:     0 4px 20px rgba(13,31,92,0.12);
-  --shadow-lg:  0 8px 40px rgba(13,31,92,0.18);
+  --primary: #1a3a9e;
+  --primary-dark: #102880;
+  --accent: #d4b060;
+  --accent-dark: #b8923a;
+  --success: #2e7d32;
+  --warning: #ea580c;
+  --danger: #c62828;
+  --bg: #f5efe4;
+  --card: #ffffff;
+  --text: #1a1a2e;
+  --text-light: #5a5a7a;
+  --border: #e0d6c4;
+  --radius: 12px;
 }
 
-/* ===== リセット & ベース ===== */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-html { scroll-behavior: smooth; }
-
+* { margin: 0; padding: 0; box-sizing: border-box; }
 body {
-  font-family: 'Noto Sans JP', -apple-system, sans-serif;
-  background: var(--cream);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', sans-serif;
+  background: var(--bg);
   color: var(--text);
   min-height: 100vh;
-  line-height: 1.7;
+  padding-bottom: 80px;
 }
 
-/* ===== ヒーローヘッダー ===== */
-.hero {
-  background:
-    linear-gradient(160deg, rgba(13,31,92,0.97) 0%, rgba(10,24,72,0.99) 100%);
-  color: var(--white);
-  padding: 48px 24px 52px;
+.header {
+  background: linear-gradient(160deg, #2a4aad 0%, #102880 60%, #1a3a9e 100%);
+  color: white;
+  padding: 20px 20px 16px;
   text-align: center;
-  position: relative;
-  overflow: hidden;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 12px rgba(13,21,64,0.4);
+  border-bottom: 2px solid var(--accent);
 }
+.header .event-name { font-size: 11px; letter-spacing: 3px; color: var(--accent); font-weight: 600; margin-bottom: 6px; text-transform: uppercase; }
+.header h1 { font-size: 20px; font-weight: 700; color: #ffffff; letter-spacing: 1px; }
+.header .subtitle { font-size: 12px; color: rgba(212,176,96,0.8); margin-top: 4px; }
 
-/* 背景の和柄ドット装飾 */
-.hero::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    radial-gradient(circle, rgba(200,168,75,0.08) 1px, transparent 1px);
-  background-size: 28px 28px;
-  pointer-events: none;
-}
-
-/* 上部の金ライン */
-.hero::after {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, transparent, var(--gold), transparent);
-}
-
-.hero-kamon {
-  width: 52px;
-  height: 52px;
-  margin: 0 auto 18px;
-  border: 2px solid var(--gold);
-  border-radius: 50%;
+.nav {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  position: relative;
+  background: var(--primary);
+  border-bottom: 2px solid var(--accent);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  position: sticky;
+  top: 72px;
+  z-index: 99;
 }
-
-.hero-event {
-  font-size: 11px;
-  letter-spacing: 4px;
-  color: var(--gold-light);
-  font-weight: 600;
-  text-transform: uppercase;
-  margin-bottom: 10px;
-}
-
-.hero h1 {
-  font-family: 'Noto Serif JP', serif;
-  font-size: clamp(22px, 5vw, 32px);
-  font-weight: 700;
-  color: var(--white);
-  letter-spacing: 2px;
-  line-height: 1.4;
-  margin-bottom: 6px;
-}
-
-.hero-subtitle {
-  font-size: 14px;
-  color: rgba(232,204,128,0.8);
-  margin-bottom: 28px;
-}
-
-.hero-info {
-  display: inline-flex;
-  gap: 20px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.hero-info-item {
-  background: rgba(255,255,255,0.07);
-  border: 1px solid rgba(200,168,75,0.25);
-  border-radius: var(--radius-sm);
-  padding: 8px 16px;
+.nav button {
+  flex: none;
+  padding: 12px 16px;
+  border: none;
+  background: none;
   font-size: 13px;
-  color: rgba(255,255,255,0.85);
-}
-
-.hero-info-item span {
-  color: var(--gold-light);
-  font-weight: 600;
-  margin-right: 4px;
-}
-
-/* ===== ステップ表示 ===== */
-.steps-bar {
-  background: var(--navy);
-  padding: 0 24px;
-  display: flex;
-  justify-content: center;
-}
-
-.steps {
-  display: flex;
-  max-width: 500px;
-  width: 100%;
-}
-
-.step-item {
-  flex: 1;
-  padding: 14px 8px;
-  text-align: center;
-  font-size: 11px;
-  color: rgba(255,255,255,0.4);
+  color: rgba(255,255,255,0.65);
+  cursor: pointer;
+  white-space: nowrap;
   border-bottom: 3px solid transparent;
-  transition: all 0.3s;
-  position: relative;
+  transition: all 0.2s;
 }
-
-.step-item.active {
-  color: var(--gold-light);
-  border-bottom-color: var(--gold);
-}
-
-.step-item.done {
-  color: rgba(200,168,75,0.6);
-}
-
-.step-item .step-num {
-  display: block;
-  font-size: 16px;
+.nav button.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
   font-weight: 700;
-  margin-bottom: 2px;
+}
+.nav button:hover {
+  color: rgba(212,176,96,0.9);
+  background: rgba(255,255,255,0.05);
 }
 
-/* ===== メインコンテンツ ===== */
-main {
-  max-width: 560px;
-  margin: 0 auto;
-  padding: 28px 16px 60px;
-}
+.page { display: none; padding: 16px; max-width: 800px; margin: 0 auto; }
+.page.active { display: block; }
 
-/* ===== カード ===== */
 .card {
-  background: var(--white);
+  background: var(--card);
   border-radius: var(--radius);
-  padding: 28px 24px;
-  margin-bottom: 20px;
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--border);
-  position: relative;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(13,21,64,0.1);
+  border-top: 3px solid var(--accent);
 }
+.card h2 { font-size: 16px; margin-bottom: 12px; color: var(--primary); font-weight: 700; }
+.card h3 { font-size: 14px; margin-bottom: 8px; color: var(--text-light); }
 
-.card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 24px; right: 24px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--gold), transparent);
-  opacity: 0.4;
-}
-
-.card-title {
-  font-family: 'Noto Serif JP', serif;
-  font-size: 17px;
-  font-weight: 700;
-  color: var(--navy);
-  margin-bottom: 6px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.card-title-icon {
-  font-size: 20px;
-}
-
-.card-desc {
-  font-size: 13px;
-  color: var(--text-light);
-  margin-bottom: 20px;
-  line-height: 1.6;
-}
-
-/* ===== フォーム ===== */
-.form-group {
-  margin-bottom: 18px;
-}
-
-.form-group:last-child {
-  margin-bottom: 0;
-}
-
-.form-label {
+.form-group { margin-bottom: 14px; }
+.form-group label {
   display: block;
   font-size: 13px;
   font-weight: 600;
-  color: var(--text-mid);
-  margin-bottom: 6px;
-}
-
-.form-label .req {
-  color: #c0392b;
-  margin-left: 3px;
-  font-size: 11px;
-}
-
-.form-label .opt {
-  color: var(--text-light);
-  font-weight: 400;
-  font-size: 11px;
-  margin-left: 4px;
-}
-
-.form-input {
-  width: 100%;
-  padding: 12px 14px;
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-sm);
-  font-size: 16px; /* iOS zoom防止: 16px以上 */
-  font-family: inherit;
+  margin-bottom: 4px;
   color: var(--text);
-  background: var(--white);
+}
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 15px;
   outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  -webkit-appearance: none;
+  transition: border-color 0.2s;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+  border-color: var(--accent);
 }
 
-.form-input:focus {
-  border-color: var(--navy-mid);
-  box-shadow: 0 0 0 3px rgba(26,58,158,0.1);
-}
-
-.form-input::placeholder {
-  color: #bbb8d0;
-  font-size: 14px;
-}
-
-.form-input.error {
-  border-color: #c0392b;
-  box-shadow: 0 0 0 3px rgba(192,57,43,0.1);
-}
-
-.form-hint {
-  font-size: 11px;
-  color: var(--text-light);
-  margin-top: 4px;
-}
-
-.form-error {
-  font-size: 12px;
-  color: #c0392b;
-  margin-top: 4px;
-  display: none;
-}
-
-.form-error.show {
-  display: block;
-}
-
-/* 2カラムグリッド（名前・会社など） */
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-/* ===== ラジオ / チェックボックス ===== */
-.check-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.check-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 14px;
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: all 0.2s;
-  font-size: 14px;
-}
-
-.check-item:hover {
-  border-color: var(--navy-mid);
-  background: rgba(26,58,158,0.03);
-}
-
-.check-item input[type="checkbox"],
-.check-item input[type="radio"] {
-  accent-color: var(--navy-mid);
-  width: 16px;
-  height: 16px;
-  flex-shrink: 0;
-  cursor: pointer;
-}
-
-.check-item.selected {
-  border-color: var(--navy-mid);
-  background: rgba(26,58,158,0.05);
-}
-
-/* ===== ボタン ===== */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 14px 24px;
+  gap: 6px;
+  padding: 10px 20px;
   border: none;
-  border-radius: var(--radius-sm);
-  font-size: 15px;
-  font-weight: 700;
-  font-family: inherit;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
   text-decoration: none;
-  line-height: 1;
 }
-
-.btn-primary {
-  background: linear-gradient(135deg, var(--gold) 0%, #b8922e 100%);
-  color: var(--navy);
-  box-shadow: 0 2px 8px rgba(200,168,75,0.35);
+.btn-primary { background: var(--accent); color: var(--primary-dark); font-weight: 700; }
+.btn-primary:hover { background: var(--accent-dark); color: white; }
+.btn-success { background: var(--success); color: white; }
+.btn-warning { background: var(--warning); color: white; }
+.btn-danger { background: var(--danger); color: white; }
+.btn-outline {
+  background: transparent;
+  color: var(--accent-dark);
+  border: 1px solid var(--accent);
 }
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+.btn-block { width: 100%; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-.btn-primary:hover {
-  background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 100%);
-  box-shadow: 0 4px 16px rgba(200,168,75,0.45);
-  transform: translateY(-1px);
-}
-
-.btn-primary:active {
-  transform: translateY(0);
-}
-
-.btn-block {
+.table-wrap { overflow-x: auto; margin: 12px -8px; }
+table {
   width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
 }
-
-.btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  transform: none !important;
+th, td {
+  padding: 8px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
 }
+th { font-weight: 600; color: var(--text-light); font-size: 12px; }
+tr:hover { background: #f8fafc; }
 
-/* ===== アラート ===== */
 .alert {
   padding: 14px 16px;
-  border-radius: var(--radius-sm);
+  border-radius: 8px;
+  margin-bottom: 12px;
   font-size: 14px;
-  margin-bottom: 16px;
-  display: none;
-  animation: slideDown 0.3s ease;
-}
-
-.alert.show { display: block; }
-
-.alert-success {
-  background: var(--success-bg);
-  color: var(--success);
-  border: 1px solid #a8ddb8;
-}
-
-.alert-error {
-  background: var(--error-bg);
-  color: var(--error);
-  border: 1px solid #f5c0c0;
-}
-
-.alert-info {
-  background: #eef2ff;
-  color: var(--navy);
-  border: 1px solid #c5d0f5;
-}
-
-@keyframes slideDown {
-  from { opacity: 0; transform: translateY(-8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* ===== 完了画面 ===== */
-#completePage {
   display: none;
 }
+.alert.show { display: block; animation: fadeIn 0.3s; }
+.alert-success { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+.alert-error { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+.alert-info { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+.alert-warning { background: #fff7ed; color: #9a3412; border: 1px solid #fed7aa; }
 
-#completePage.show {
-  display: block;
-  animation: fadeIn 0.5s ease;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
-.complete-card {
-  background: var(--white);
-  border-radius: var(--radius-lg);
-  padding: 36px 24px;
+.checkin-result {
   text-align: center;
-  box-shadow: var(--shadow-lg);
-  border: 1px solid var(--border);
-  margin-bottom: 20px;
+  padding: 30px 20px;
+  display: none;
+}
+.checkin-result.show { display: block; animation: fadeIn 0.3s; }
+.checkin-result .icon { font-size: 64px; margin-bottom: 12px; }
+.checkin-result .name { font-size: 24px; font-weight: 700; }
+.checkin-result .company { font-size: 16px; color: var(--text-light); margin-top: 4px; }
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.stat-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 16px;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+.stat-card .number {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--accent-dark);
+}
+.stat-card .label {
+  font-size: 12px;
+  color: var(--text-light);
+  margin-top: 4px;
 }
 
-.complete-mark {
-  width: 72px;
-  height: 72px;
-  background: linear-gradient(135deg, var(--gold), #b8922e);
+.qr-container { text-align: center; padding: 16px; }
+.qr-container canvas, .qr-container img { max-width: 200px !important; height: auto !important; }
+#qr-reader { width: 100%; max-width: 400px; margin: 0 auto; }
+#qr-reader video { border-radius: 8px; }
+
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.tag-pending { background: #fef3c7; color: #92400e; }
+.tag-done { background: #dcfce7; color: #166534; }
+
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal-overlay.show { display: flex; }
+.modal {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 24px;
+  width: 100%;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+.modal h2 { margin-bottom: 16px; }
+
+.spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border);
+  border-top-color: var(--primary);
   border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+
+.setup-step {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+  align-items: flex-start;
+}
+.step-num {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 36px;
-  margin: 0 auto 20px;
-  box-shadow: 0 4px 20px rgba(200,168,75,0.4);
-}
-
-.complete-title {
-  font-family: 'Noto Serif JP', serif;
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--navy);
-  margin-bottom: 8px;
-}
-
-.complete-message {
   font-size: 14px;
-  color: var(--text-light);
-  line-height: 1.8;
-  margin-bottom: 24px;
-}
-
-.complete-id {
-  background: var(--gold-pale);
-  border: 1px dashed var(--gold);
-  border-radius: var(--radius-sm);
-  padding: 10px 16px;
-  font-size: 13px;
-  color: var(--navy);
-  margin-bottom: 20px;
-  display: inline-block;
-}
-
-.complete-id strong {
-  font-size: 16px;
-  letter-spacing: 1px;
-  display: block;
-  margin-top: 2px;
-  color: var(--navy);
-}
-
-/* QRコード表示エリア */
-.qr-area {
-  background: var(--white);
-  border: 2px solid var(--navy);
-  border-radius: var(--radius);
-  padding: 20px;
-  display: inline-block;
-  margin: 0 auto 20px;
-  box-shadow: var(--shadow);
-}
-
-.qr-area canvas,
-.qr-area img {
-  display: block;
-  max-width: 200px !important;
-  height: auto !important;
-}
-
-.qr-label {
-  font-size: 12px;
-  color: var(--text-light);
-  margin-top: 12px;
-  text-align: center;
-}
-
-/* ===== ヒントボックス ===== */
-.hint-box {
-  background: var(--gold-pale);
-  border: 1px solid rgba(200,168,75,0.3);
-  border-radius: var(--radius-sm);
-  padding: 14px 16px;
-  font-size: 13px;
-  color: var(--text-mid);
-  line-height: 1.7;
-  margin-bottom: 16px;
-}
-
-.hint-box strong {
-  color: var(--navy);
-  display: block;
-  margin-bottom: 4px;
-}
-
-/* ===== 持参不要バナー ===== */
-.no-qr-banner {
-  background: linear-gradient(135deg, var(--navy), var(--navy-mid));
-  color: var(--white);
-  border-radius: var(--radius);
-  padding: 20px;
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-.no-qr-banner h3 {
-  font-size: 15px;
   font-weight: 700;
-  color: var(--gold-light);
-  margin-bottom: 6px;
 }
+.step-content { flex: 1; font-size: 14px; line-height: 1.6; }
 
-.no-qr-banner p {
-  font-size: 13px;
-  color: rgba(255,255,255,0.8);
-  line-height: 1.6;
+.qr-print-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
 }
-
-/* ===== ローディング ===== */
-.spinner {
-  display: inline-block;
-  width: 18px;
-  height: 18px;
-  border: 2px solid rgba(13,31,92,0.2);
-  border-top-color: var(--navy);
-  border-radius: 50%;
-  animation: spin 0.6s linear infinite;
-  vertical-align: middle;
-}
-
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* ===== 区切り線 ===== */
-.divider {
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--border), transparent);
-  margin: 20px 0;
-}
-
-/* ===== 同意チェック ===== */
-.consent-area {
-  background: #f9f9fb;
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 16px;
-  margin-bottom: 20px;
-}
-
-.consent-text {
-  font-size: 12px;
-  color: var(--text-light);
-  line-height: 1.7;
-  margin-bottom: 12px;
-}
-
-.consent-check {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text);
-}
-
-.consent-check input {
-  accent-color: var(--navy-mid);
-  width: 16px;
-  height: 16px;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-/* ===== フッター ===== */
-footer {
+.qr-print-item {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
   text-align: center;
-  padding: 20px 16px 40px;
-  font-size: 12px;
-  color: var(--text-light);
-  border-top: 1px solid var(--border);
 }
+.qr-print-item .name { font-weight: 600; font-size: 13px; margin-top: 8px; }
+.qr-print-item .company { font-size: 11px; color: var(--text-light); }
 
-/* ===== レスポンシブ ===== */
-@media (max-width: 480px) {
-  .form-row {
-    grid-template-columns: 1fr;
-  }
-  .hero {
-    padding: 36px 16px 40px;
-  }
-  .card {
-    padding: 22px 18px;
-  }
-}
-
-/* ===== 印刷用 ===== */
 @media print {
-  .hero, .steps-bar, .no-qr-banner, footer, #registrationForm { display: none !important; }
-  #completePage { display: block !important; }
-  .complete-card {
-    box-shadow: none;
-    border: 1px solid #ccc;
-  }
+  .header, .nav, .no-print { display: none !important; }
+  .page { display: block !important; padding: 0; }
+  .qr-print-item { break-inside: avoid; }
 }
 </style>
 </head>
 <body>
 
-<!-- ===== ヒーローヘッダー ===== -->
-<div class="hero">
-  <div class="hero-kamon">🌾</div>
-  <div class="hero-event">EIWA BUSSAN FOOD EXHIBITION 2026</div>
-  <h1>永和物産<br>食品展示会 2026</h1>
-  <p class="hero-subtitle">来場者事前登録フォーム</p>
-  <div class="hero-info">
-    <div class="hero-info-item"><span>📅</span>2026年11月（日程調整中）</div>
-    <div class="hero-info-item"><span>📍</span>会場未定</div>
-    <div class="hero-info-item"><span>🎫</span>招待制・入場無料</div>
-  </div>
+<div class="header">
+  <div class="event-name">永和物産 食品展示会 2026</div>
+  <h1>QR受付システム</h1>
+  <div class="subtitle" id="connectionStatus">未接続</div>
 </div>
 
-<!-- ===== ステップバー ===== -->
-<div class="steps-bar">
-  <div class="steps">
-    <div class="step-item active" id="step1">
-      <span class="step-num">1</span>
-      情報入力
-    </div>
-    <div class="step-item" id="step2">
-      <span class="step-num">2</span>
-      確認
-    </div>
-    <div class="step-item" id="step3">
-      <span class="step-num">3</span>
-      QR取得
-    </div>
-  </div>
+<div class="nav" id="mainNav">
+  <button onclick="showPage('setup')" class="active" data-page="setup">設定</button>
+  <button onclick="showPage('visitors')" data-page="visitors">来場者管理</button>
+  <button onclick="showPage('booths')" data-page="booths">ブース管理</button>
+  <button onclick="showPage('reception')" data-page="reception">受付</button>
+  <button onclick="showPage('booth-scan')" data-page="booth-scan">ブース受付</button>
+  <button onclick="showPage('dashboard')" data-page="dashboard">ダッシュボード</button>
 </div>
 
-<!-- ===== メインコンテンツ ===== -->
-<main>
 
-  <!-- QR不要バナー -->
-  <div class="no-qr-banner">
-    <h3>📱 QRコードを忘れても大丈夫！</h3>
-    <p>当日QRコードをお持ちでない場合は、お名前・会社名をスタッフにお伝えください。<br>事前登録済みの方はスムーズにご入場いただけます。</p>
-  </div>
-
-  <!-- ===== 登録フォーム ===== -->
-  <div id="registrationForm">
-
-    <div class="card">
-      <div class="card-title"><span class="card-title-icon">🏢</span>会社情報</div>
-      <p class="card-desc">お客様の会社情報をご入力ください。</p>
-
-      <div class="form-group">
-        <label class="form-label">会社名 / 店舗名<span class="req">*必須</span></label>
-        <input type="text" class="form-input" id="company" placeholder="例：株式会社〇〇フーズ・〇〇ホテル"
-          autocomplete="organization" inputmode="text">
-        <div class="form-error" id="err-company">会社名 / 店舗名をご入力ください</div>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">部署名<span class="opt">（任意）</span></label>
-        <input type="text" class="form-input" id="department" placeholder="例：購買部・仕入部・洋食・和食・中華"
-          autocomplete="organization-title">
-      </div>
-
-
-    </div>
-
-    <div class="card">
-      <div class="card-title"><span class="card-title-icon">👤</span>担当者情報</div>
-      <p class="card-desc">当日ご来場される担当者様の情報をご入力ください。</p>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">姓<span class="req">*</span></label>
-          <input type="text" class="form-input" id="lastName" placeholder="山田"
-            autocomplete="family-name" inputmode="text">
-          <div class="form-error" id="err-lastName">姓をご入力ください</div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">名<span class="req">*</span></label>
-          <input type="text" class="form-input" id="firstName" placeholder="太郎"
-            autocomplete="given-name" inputmode="text">
-          <div class="form-error" id="err-firstName">名をご入力ください</div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">メールアドレス<span class="req">*必須</span></label>
-        <input type="email" class="form-input" id="email" placeholder="yamada@example.com"
-          autocomplete="email" inputmode="email">
-        <p class="form-hint">QRコードをメールでもお送りします（任意）</p>
-        <div class="form-error" id="err-email">正しいメールアドレスをご入力ください</div>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">電話番号<span class="opt">（任意）</span></label>
-        <input type="tel" class="form-input" id="phone" placeholder="090-1234-5678"
-          autocomplete="tel" inputmode="tel">
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title"><span class="card-title-icon">🔍</span>ご興味のあるカテゴリ</div>
-      <p class="card-desc">ご関心のある商品カテゴリをお選びください（複数選択可）。<br>担当スタッフがご案内いたします。</p>
-
-      <div class="check-group" id="categoryGroup">
-        <label class="check-item">
-          <input type="checkbox" value="調味料"> 調味料・ソース・ドレッシング
-        </label>
-        <label class="check-item">
-          <input type="checkbox" value="冷凍食品"> 冷凍食品
-        </label>
-        <label class="check-item">
-          <input type="checkbox" value="乳製品"> 乳製品・チーズ
-        </label>
-        <label class="check-item">
-          <input type="checkbox" value="飲料"> 飲料・ジュース
-        </label>
-        <label class="check-item">
-          <input type="checkbox" value="菓子"> 菓子・スナック
-        </label>
-        <label class="check-item">
-          <input type="checkbox" value="水産加工品"> 水産加工品
-        </label>
-        <label class="check-item">
-          <input type="checkbox" value="畜産加工品"> 畜産加工品・ハム・ソーセージ
-        </label>
-        <label class="check-item">
-          <input type="checkbox" value="農産加工品"> 農産加工品・漬物
-        </label>
-        <label class="check-item">
-          <input type="checkbox" value="健康食品"> 健康食品・サプリメント
-        </label>
-        <label class="check-item">
-          <input type="checkbox" value="その他"> その他・全般
-        </label>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title"><span class="card-title-icon">💬</span>その他・ご要望<span style="font-size:12px;font-weight:400;color:var(--text-light);margin-left:8px;">（任意）</span></div>
-
-      <div class="form-group">
-        <label class="form-label">当日のご要望・質問など</label>
-        <textarea class="form-input" id="notes" rows="3" placeholder="特定のメーカーのご指名、ご質問などございましたらご記入ください"></textarea>
-      </div>
-
-    </div>
-
-    <!-- 同意エリア -->
-    <div class="consent-area">
-      <div class="consent-text">
-        ご入力いただいた個人情報は、展示会の受付管理・来場確認・ご案内の送付のみに使用いたします。第三者への提供、展示会以外での使用はいたしません。
-      </div>
-      <label class="consent-check">
-        <input type="checkbox" id="consentCheck">
-        個人情報の取り扱いについて同意します
-      </label>
-      <div class="form-error" id="err-consent" style="margin-top:8px;">同意いただく必要があります</div>
-    </div>
-
-    <!-- アラート -->
-    <div class="alert" id="formAlert"></div>
-
-    <!-- 送信ボタン -->
-    <button class="btn btn-primary btn-block" id="submitBtn" onclick="submitRegistration()">
-      <span id="submitBtnText">事前登録する</span>
-      <span id="submitSpinner" style="display:none;" class="spinner"></span>
-    </button>
-
-    <p style="text-align:center;font-size:12px;color:var(--text-light);margin-top:12px;">
-      登録後、このページにQRコードが表示されます。<br>
-      スクリーンショットを保存するか、メールでお受け取りください。
+<!-- 設定ページ -->
+<div class="page active" id="page-setup">
+  <div class="card">
+    <h2>初期設定</h2>
+    <p style="font-size:14px;color:var(--text-light);margin-bottom:16px;">
+      Google Apps Script で作成したWebアプリのURLを入力してください。
     </p>
-
+    <div class="form-group">
+      <label>GAS WebアプリURL</label>
+      <input type="url" id="gasUrl" placeholder="https://script.google.com/macros/s/xxx/exec">
+    </div>
+    <button class="btn btn-primary btn-block" onclick="saveAndTestConnection()">接続テスト＆保存</button>
+    <div class="alert" id="setupAlert" style="margin-top:12px;"></div>
   </div>
-  <!-- /#registrationForm -->
 
-
-  <!-- ===== 完了画面 ===== -->
-  <div id="completePage">
-
-    <div class="complete-card">
-      <div class="complete-mark">✓</div>
-      <div class="complete-title">事前登録が完了しました！</div>
-      <div class="complete-message">
-        ご登録ありがとうございます。<br>
-        下記のQRコードを当日スタッフにお見せください。<br>
-        スムーズにご入場いただけます。
-      </div>
-
-      <div class="complete-id">
-        登録ID
-        <strong id="completeId">—</strong>
-      </div>
-
-      <div>
-        <div class="qr-area">
-          <div id="qrCodeCanvas"></div>
-        </div>
-        <div class="qr-label">📱 このQRコードのスクリーンショットを保存してください</div>
-      </div>
-
-      <div class="divider"></div>
-
-      <div style="text-align:left;">
-        <p style="font-size:14px;font-weight:600;color:var(--navy);margin-bottom:10px;">👤 登録内容</p>
-        <table style="width:100%;font-size:13px;border-collapse:collapse;" id="confirmTable"></table>
+  <div class="card">
+    <h2>セットアップ手順</h2>
+    <div class="setup-step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <strong>Google スプレッドシート</strong>を新規作成し、<br>
+        <strong>拡張機能 → Apps Script</strong> を開く
       </div>
     </div>
-
-    <div class="hint-box">
-      <strong>📌 当日の流れ</strong>
-      ① 入口受付でこのQRコードをご提示<br>
-      ② 受付完了後、会場へご入場<br>
-      ③ 各ブースでスタッフにQRコードをご提示いただくとスムーズです
+    <div class="setup-step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        同梱の <strong>gas-backend.js</strong> のコードを全文コピーして貼り付け
+      </div>
     </div>
-
-    <div class="hint-box">
-      <strong>💡 QRコードをお忘れの場合</strong>
-      受付スタッフに「お名前」「会社名」をお伝えください。<br>
-      事前登録済みの方はスムーズに入場手続きができます。
+    <div class="setup-step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        上部メニューで <strong>initializeSheets</strong> 関数を選択して実行（初回のみ権限承認が必要）
+      </div>
     </div>
-
-    <button class="btn btn-primary btn-block no-print" onclick="window.print()" style="margin-bottom:12px;">
-      🖨️ この画面を印刷・保存する
-    </button>
-
-    <button class="btn btn-block no-print" style="background:#f0f0f8;color:var(--navy);border:1px solid var(--border);" onclick="resetForm()">
-      別の方を登録する
-    </button>
-
+    <div class="setup-step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <strong>デプロイ → 新しいデプロイ → ウェブアプリ</strong><br>
+        「実行するユーザー: 自分」「アクセスできるユーザー: 全員」で公開
+      </div>
+    </div>
+    <div class="setup-step">
+      <div class="step-num">5</div>
+      <div class="step-content">
+        表示されたURLを上の欄に貼り付けて接続テスト
+      </div>
+    </div>
   </div>
-  <!-- /#completePage -->
+</div>
 
-</main>
 
-<footer>
-  <p>永和物産株式会社　食品展示会 2026</p>
-  <p style="margin-top:4px;">ご不明な点はお問い合わせください</p>
-</footer>
+<!-- 来場者管理ページ -->
+<div class="page" id="page-visitors">
+  <div class="card">
+    <h2>来場者登録</h2>
+    <div class="form-group">
+      <label>会社名 *</label>
+      <input type="text" id="v-company" placeholder="例: 株式会社〇〇食品">
+    </div>
+    <div class="form-group">
+      <label>部署名</label>
+      <input type="text" id="v-department" placeholder="例: 仕入部">
+    </div>
+    <div class="form-group">
+      <label>お名前 *</label>
+      <input type="text" id="v-name" placeholder="例: 山田 太郎">
+    </div>
+    <div class="form-group">
+      <label>メールアドレス</label>
+      <input type="email" id="v-email" placeholder="例: yamada@example.com">
+    </div>
+    <div class="form-group">
+      <label>電話番号</label>
+      <input type="tel" id="v-phone" placeholder="例: 090-1234-5678">
+    </div>
+    <button class="btn btn-primary btn-block" onclick="addVisitor()">登録してQRコード生成</button>
+    <div class="alert" id="visitorAlert" style="margin-top:12px;"></div>
+    <div class="qr-container" id="newVisitorQR" style="display:none;">
+      <div id="qr-single"></div>
+      <p style="margin-top:8px;font-size:13px;color:var(--text-light);">このQRコードを来場者にお渡しください</p>
+    </div>
+  </div>
+
+  <div class="card no-print">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+      <h2>来場者一覧</h2>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-outline btn-sm" onclick="loadVisitors()">更新</button>
+        <button class="btn btn-outline btn-sm" onclick="showQRPrintView()">QR一括印刷</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>ID</th><th>会社名</th><th>部署</th><th>氏名</th><th>メール</th><th>電話</th><th></th></tr>
+        </thead>
+        <tbody id="visitorTable"></tbody>
+      </table>
+    </div>
+    <p style="font-size:12px;color:var(--text-light);margin-top:8px;" id="visitorCount"></p>
+  </div>
+
+  <div class="card" id="qrPrintArea" style="display:none;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;" class="no-print">
+      <h2>QRコード一括印刷</h2>
+      <button class="btn btn-primary btn-sm" onclick="window.print()">印刷する</button>
+    </div>
+    <div class="qr-print-grid" id="qrPrintGrid"></div>
+  </div>
+</div>
+
+
+<!-- ブース管理ページ -->
+<div class="page" id="page-booths">
+  <div class="card">
+    <h2>ブース（出展メーカー）登録</h2>
+    <div class="form-group">
+      <label>メーカー名 *</label>
+      <input type="text" id="b-company" placeholder="例: 〇〇食品株式会社">
+    </div>
+    <div class="form-group">
+      <label>担当者名</label>
+      <input type="text" id="b-contact" placeholder="例: 佐藤 花子">
+    </div>
+    <div class="form-group">
+      <label>担当者メール</label>
+      <input type="email" id="b-email" placeholder="例: sato@maker.co.jp">
+    </div>
+    <div class="form-group">
+      <label>カテゴリ</label>
+      <select id="b-category">
+        <option value="">選択してください</option>
+        <option>調味料</option>
+        <option>冷凍食品</option>
+        <option>乳製品</option>
+        <option>飲料</option>
+        <option>菓子</option>
+        <option>水産加工品</option>
+        <option>畜産加工品</option>
+        <option>農産加工品</option>
+        <option>健康食品</option>
+        <option>その他</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>主な商品（カンマ区切り）</label>
+      <input type="text" id="b-products" placeholder="例: ポン酢, ドレッシング, めんつゆ">
+    </div>
+    <div class="form-group">
+      <label>ブース番号</label>
+      <input type="text" id="b-number" placeholder="例: A-12">
+    </div>
+    <button class="btn btn-primary btn-block" onclick="addBooth()">ブース登録</button>
+    <div class="alert" id="boothAlert" style="margin-top:12px;"></div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <h2>ブース一覧</h2>
+      <button class="btn btn-outline btn-sm" onclick="loadBooths()">更新</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>番号</th><th>メーカー名</th><th>カテゴリ</th><th>商品</th><th>担当者</th><th></th></tr>
+        </thead>
+        <tbody id="boothTable"></tbody>
+      </table>
+    </div>
+    <p style="font-size:12px;color:var(--text-light);margin-top:8px;" id="boothCount"></p>
+  </div>
+</div>
+
+
+<!-- 受付ページ -->
+<div class="page" id="page-reception">
+  <div class="card">
+    <h2>受付 - QRコードスキャン</h2>
+    <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">
+      来場者のQRコードをスキャンして受付を行います
+    </p>
+    <div id="reception-scanner"></div>
+    <div style="margin-top:12px;text-align:center;">
+      <button class="btn btn-primary" id="startReceptionScan" onclick="startReceptionScanner()">カメラを起動</button>
+      <button class="btn btn-danger" id="stopReceptionScan" onclick="stopReceptionScanner()" style="display:none;">カメラを停止</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>手動入力</h3>
+    <div style="display:flex;gap:8px;">
+      <input type="text" id="manualCheckinId" placeholder="来場者ID（例: V-ABC123）" style="flex:1;padding:10px;border:1px solid var(--border);border-radius:8px;">
+      <button class="btn btn-primary" onclick="manualCheckin()">受付</button>
+    </div>
+  </div>
+
+  <div class="checkin-result" id="checkinResult">
+    <div class="icon" id="checkinIcon"></div>
+    <div class="name" id="checkinName"></div>
+    <div class="company" id="checkinCompany"></div>
+    <div style="margin-top:12px;font-size:14px;" id="checkinMessage"></div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <h3>本日の受付記録</h3>
+      <button class="btn btn-outline btn-sm" onclick="loadCheckins()">更新</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>時刻</th><th>ID</th><th>氏名</th><th>会社名</th></tr></thead>
+        <tbody id="checkinTable"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+<!-- ブース受付ページ -->
+<div class="page" id="page-booth-scan">
+  <div class="card">
+    <h2>ブース受付</h2>
+    <div class="form-group">
+      <label>あなたのブースを選択</label>
+      <select id="currentBooth" onchange="saveCurrentBooth()">
+        <option value="">ブースを選択...</option>
+      </select>
+    </div>
+  </div>
+
+  <div id="boothScanArea" style="display:none;">
+    <div class="card">
+      <h3>来場者QRスキャン</h3>
+      <div id="booth-scanner"></div>
+      <div style="margin-top:12px;text-align:center;">
+        <button class="btn btn-primary" id="startBoothScan" onclick="startBoothScanner()">カメラを起動</button>
+        <button class="btn btn-danger" id="stopBoothScan" onclick="stopBoothScanner()" style="display:none;">カメラを停止</button>
+      </div>
+    </div>
+
+    <div class="card" id="boothVisitorInfo" style="display:none;">
+      <h3>来場者情報</h3>
+      <div id="boothVisitorDetails"></div>
+      <hr style="margin:12px 0;border:none;border-top:1px solid var(--border);">
+      <h3>サンプル依頼</h3>
+      <div class="form-group">
+        <label>商品名（プルダウンから選択）</label>
+        <select id="sr-product" onchange="toggleFreeInput()">
+          <option value="">商品を選択...</option>
+        </select>
+      </div>
+      <div class="form-group" id="sr-free-group" style="display:none;">
+        <label>商品名（自由記入）</label>
+        <input type="text" id="sr-product-free" placeholder="商品名を入力してください" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:15px;">
+      </div>
+      <div class="form-group">
+        <label>数量</label>
+        <input type="number" id="sr-quantity" value="1" min="1" max="99">
+      </div>
+      <div class="form-group">
+        <label>備考</label>
+        <textarea id="sr-notes" rows="2" placeholder="配送先や用途など"></textarea>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-success btn-block" onclick="submitSampleRequest()">サンプル依頼を送信</button>
+        <button class="btn btn-outline" onclick="recordBoothVisitOnly()">訪問のみ記録</button>
+      </div>
+      <div class="alert" id="sampleAlert" style="margin-top:12px;"></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ダッシュボードページ -->
+<div class="page" id="page-dashboard">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+    <h2 style="font-size:18px;">ダッシュボード</h2>
+    <button class="btn btn-outline btn-sm" onclick="loadDashboard()">更新</button>
+  </div>
+
+  <div class="stats" id="dashStats">
+    <div class="stat-card"><div class="number" id="stat-visitors">-</div><div class="label">登録来場者</div></div>
+    <div class="stat-card"><div class="number" id="stat-checkins">-</div><div class="label">受付済み</div></div>
+    <div class="stat-card"><div class="number" id="stat-visits">-</div><div class="label">ブース訪問</div></div>
+    <div class="stat-card"><div class="number" id="stat-samples">-</div><div class="label">サンプル依頼</div></div>
+  </div>
+
+  <div class="card">
+    <div class="form-group">
+      <label>ブース別フィルター</label>
+      <select id="dashBoothFilter" onchange="filterDashboard()">
+        <option value="">全体</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>ブース別集計</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>ブース</th><th>メーカー</th><th>訪問数</th><th>サンプル依頼数</th></tr></thead>
+        <tbody id="boothSummaryTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>サンプル依頼一覧</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>時刻</th><th>来場者</th><th>会社</th><th>ブース</th><th>商品</th><th>数量</th><th>状態</th></tr></thead>
+        <tbody id="sampleTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>受付ログ</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>時刻</th><th>氏名</th><th>会社名</th></tr></thead>
+        <tbody id="dashCheckinTable"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+<!-- ステータス変更モーダル -->
+<div class="modal-overlay" id="statusModal">
+  <div class="modal">
+    <h2>サンプル依頼ステータス変更</h2>
+    <input type="hidden" id="statusSampleId">
+    <div class="form-group">
+      <label>ステータス</label>
+      <select id="statusSelect">
+        <option value="未対応">未対応</option>
+        <option value="対応中">対応中</option>
+        <option value="発送済み">発送済み</option>
+        <option value="完了">完了</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;">
+      <button class="btn btn-outline" onclick="closeModal('statusModal')">キャンセル</button>
+      <button class="btn btn-primary" onclick="updateStatus()">更新</button>
+    </div>
+  </div>
+</div>
 
 <script>
-// ===========================
-// 設定：GASのURLをここに貼り付けてください
-// ===========================
-// 【重要】GASデプロイ後に以下のURLを書き換えてください
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbyPXwitOCCjEixIZIJOBivlX8FsZIsy9K5FBOCkJzOv06oWRaSzzxvwZgSginv4kaGT/exec';
-// 例: const GAS_URL = 'https://script.google.com/macros/s/XXXXX/exec';
 
-// ===========================
-// チェックアイテムのインタラクション
-// ===========================
-document.querySelectorAll('.check-item').forEach(item => {
-  const input = item.querySelector('input');
-  input.addEventListener('change', () => {
-    item.classList.toggle('selected', input.checked);
-  });
-});
+let GAS_URL = localStorage.getItem('gasUrl') || '';
+let visitors = [];
+let booths = [];
+let currentVisitorId = '';
+let receptionScanner = null;
+let boothScanner = null;
 
-// ===========================
-// バリデーション
-// ===========================
-function validateEmail(email) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+function showPage(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + pageId).classList.add('active');
+  document.querySelector(`[data-page="${pageId}"]`).classList.add('active');
+
+  if (pageId === 'visitors') loadVisitors();
+  if (pageId === 'booths') loadBooths();
+  if (pageId === 'reception') loadCheckins();
+  if (pageId === 'booth-scan') initBoothScan();
+  if (pageId === 'dashboard') loadDashboard();
+
+  stopReceptionScanner();
+  stopBoothScanner();
 }
 
-function setError(fieldId, errId, show) {
-  const field = document.getElementById(fieldId);
-  const err   = document.getElementById(errId);
-  if (show) {
-    field.classList.add('error');
-    err.classList.add('show');
-  } else {
-    field.classList.remove('error');
-    err.classList.remove('show');
-  }
-}
+async function apiCall(action, params = {}, body = null) {
+  if (!GAS_URL) throw new Error('GAS URLが設定されていません');
 
-function validate() {
-  let ok = true;
-
-  const company = document.getElementById('company').value.trim();
-  setError('company', 'err-company', !company);
-  if (!company) ok = false;
-
-  const lastName = document.getElementById('lastName').value.trim();
-  setError('lastName', 'err-lastName', !lastName);
-  if (!lastName) ok = false;
-
-  const firstName = document.getElementById('firstName').value.trim();
-  setError('firstName', 'err-firstName', !firstName);
-  if (!firstName) ok = false;
-
-  const email = document.getElementById('email').value.trim();
-  const emailBad = !email || !validateEmail(email);
-  setError('email', 'err-email', emailBad);
-  if (emailBad) ok = false;
-
-  const consent = document.getElementById('consentCheck').checked;
-  const errConsent = document.getElementById('err-consent');
-  if (!consent) {
-    errConsent.classList.add('show');
-    ok = false;
-  } else {
-    errConsent.classList.remove('show');
+  let url = GAS_URL + '?action=' + action;
+  for (let key in params) {
+    url += '&' + encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
   }
 
-  return ok;
-}
-
-// ===========================
-// 送信処理
-// ===========================
-async function submitRegistration() {
-  if (!validate()) {
-    showAlert('formAlert', 'error', '⚠️ 必須項目をご確認ください');
-    // エラー箇所へスクロール
-    const firstError = document.querySelector('.form-input.error');
-    if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    return;
+  const options = { method: body ? 'POST' : 'GET' };
+  if (body) {
+    options.headers = { 'Content-Type': 'text/plain' };
+    options.body = JSON.stringify(body);
   }
 
-  // カテゴリ収集
-  const categories = [];
-  document.querySelectorAll('#categoryGroup input:checked').forEach(cb => {
-    categories.push(cb.value);
-  });
-
-  const name = document.getElementById('lastName').value.trim() + ' ' + document.getElementById('firstName').value.trim();
-
-  const payload = {
-    company:    document.getElementById('company').value.trim(),
-    department: document.getElementById('department').value.trim(),
-    name:       name,
-    email:      document.getElementById('email').value.trim(),
-    phone:      document.getElementById('phone').value.trim(),
-    categories: categories.join('・'),
-    notes:      document.getElementById('notes').value.trim(),
-    source:     'web_preregister'
-  };
-
-  // ボタンをローディングに変更
-  const btn = document.getElementById('submitBtn');
-  btn.disabled = true;
-  document.getElementById('submitBtnText').textContent = '登録中...';
-  document.getElementById('submitSpinner').style.display = 'inline-block';
-  document.getElementById('formAlert').classList.remove('show');
-
-  try {
-    const url = GAS_URL + '?action=addVisitor';
-    const resp = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify(payload)
-    });
-
-    const data = await resp.json();
-
-    if (!data.success) throw new Error(data.error || '登録に失敗しました');
-
-    // 成功 → 完了画面へ
-    showCompletePage(data.id, payload);
-
-  } catch (e) {
-    // GASが未設定の場合はデモ動作
-    if (GAS_URL === 'ここにGASのURLを貼り付け' || GAS_URL === '') {
-      const demoId = 'V-' + Math.random().toString(36).substr(2, 6).toUpperCase();
-      showCompletePage(demoId, payload);
-    } else {
-      showAlert('formAlert', 'error', '通信エラーが発生しました。時間をおいて再度お試しください。\n詳細: ' + e.message);
-      btn.disabled = false;
-      document.getElementById('submitBtnText').textContent = '事前登録する';
-      document.getElementById('submitSpinner').style.display = 'none';
-    }
-  }
+  const resp = await fetch(url, options);
+  const data = await resp.json();
+  if (!data.success && data.error) throw new Error(data.error);
+  return data;
 }
 
-// ===========================
-// 完了画面の表示
-// ===========================
-function showCompletePage(visitorId, payload) {
-  // フォームを非表示
-  document.getElementById('registrationForm').style.display = 'none';
-  document.getElementById('completePage').classList.add('show');
-
-  // ステップ更新
-  document.getElementById('step1').classList.remove('active');
-  document.getElementById('step1').classList.add('done');
-  document.getElementById('step2').classList.add('done');
-  document.getElementById('step3').classList.add('active');
-
-  // ID表示
-  document.getElementById('completeId').textContent = visitorId;
-
-  // QRコード生成
-  const qrDiv = document.getElementById('qrCodeCanvas');
-  qrDiv.innerHTML = '';
-  new QRCode(qrDiv, {
-    text: visitorId,
-    width: 200,
-    height: 200,
-    colorDark: '#0d1f5c',
-    colorLight: '#ffffff'
-  });
-
-  // 登録内容テーブル
-  const rows = [
-    ['お名前',     payload.name],
-    ['会社名',     payload.company],
-    ['部署',       payload.department || '—'],
-    ['メール',     payload.email],
-    ['電話',       payload.phone      || '—'],
-    ['関心カテゴリ', payload.categories || '—'],
-  ];
-
-  document.getElementById('confirmTable').innerHTML = rows.map(([label, val]) => `
-    <tr style="border-bottom:1px solid #eee;">
-      <td style="padding:6px 0;color:#6b6b8a;width:110px;font-size:12px;">${label}</td>
-      <td style="padding:6px 0;font-size:13px;word-break:break-all;">${val}</td>
-    </tr>
-  `).join('');
-
-  // ページトップへ
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-// ===========================
-// アラート表示
-// ===========================
 function showAlert(elemId, type, message) {
   const el = document.getElementById(elemId);
   el.className = 'alert alert-' + type + ' show';
   el.textContent = message;
+  if (type === 'success') setTimeout(() => el.classList.remove('show'), 4000);
 }
 
-// ===========================
-// フォームリセット（別の人を登録）
-// ===========================
-function resetForm() {
-  document.getElementById('company').value = '';
-  document.getElementById('department').value = '';
-  document.getElementById('lastName').value = '';
-  document.getElementById('firstName').value = '';
-  document.getElementById('email').value = '';
-  document.getElementById('phone').value = '';
-  document.getElementById('notes').value = '';
-  document.getElementById('consentCheck').checked = false;
-  document.querySelectorAll('#categoryGroup input').forEach(cb => {
-    cb.checked = false;
-    cb.closest('.check-item').classList.remove('selected');
+function closeModal(id) {
+  document.getElementById(id).classList.remove('show');
+}
+
+async function saveAndTestConnection() {
+  const url = document.getElementById('gasUrl').value.trim();
+  if (!url) return showAlert('setupAlert', 'error', 'URLを入力してください');
+
+  showAlert('setupAlert', 'info', '接続テスト中...');
+
+  try {
+    GAS_URL = url;
+    const result = await apiCall('ping');
+    localStorage.setItem('gasUrl', url);
+    showAlert('setupAlert', 'success', '接続成功！ システムを使用できます');
+    document.getElementById('connectionStatus').textContent = '接続済み';
+  } catch (e) {
+    showAlert('setupAlert', 'error', '接続失敗: ' + e.message);
+    document.getElementById('connectionStatus').textContent = '接続エラー';
+  }
+}
+
+if (GAS_URL) {
+  document.getElementById('gasUrl').value = GAS_URL;
+  document.getElementById('connectionStatus').textContent = '接続済み';
+}
+
+async function addVisitor() {
+  const data = {
+    company: document.getElementById('v-company').value.trim(),
+    department: document.getElementById('v-department').value.trim(),
+    name: document.getElementById('v-name').value.trim(),
+    email: document.getElementById('v-email').value.trim(),
+    phone: document.getElementById('v-phone').value.trim()
+  };
+
+  if (!data.company || !data.name) return showAlert('visitorAlert', 'error', '会社名と氏名は必須です');
+
+  try {
+    const result = await apiCall('addVisitor', {}, data);
+    showAlert('visitorAlert', 'success', `登録完了！ ID: ${result.id}`);
+
+    const qrDiv = document.getElementById('qr-single');
+    qrDiv.innerHTML = '';
+    document.getElementById('newVisitorQR').style.display = 'block';
+    new QRCode(qrDiv, {
+      text: result.id,
+      width: 200,
+      height: 200,
+      colorDark: '#1e293b',
+      colorLight: '#ffffff'
+    });
+
+    ['v-company','v-department','v-name','v-email','v-phone'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+
+    loadVisitors();
+  } catch (e) {
+    showAlert('visitorAlert', 'error', 'エラー: ' + e.message);
+  }
+}
+
+async function loadVisitors() {
+  try {
+    const result = await apiCall('getVisitors');
+    visitors = result.data || [];
+    const tbody = document.getElementById('visitorTable');
+    tbody.innerHTML = visitors.map(v => `
+      <tr>
+        <td><code style="font-size:11px">${v.id}</code></td>
+        <td>${v.company}</td>
+        <td>${v.department}</td>
+        <td>${v.name}</td>
+        <td>${v.email}</td>
+        <td>${v.phone}</td>
+        <td><button class="btn btn-outline btn-sm" onclick="showVisitorQR('${v.id}','${v.name}','${v.company}')">QR</button></td>
+      </tr>
+    `).join('');
+    document.getElementById('visitorCount').textContent = `${visitors.length}名登録済み`;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+function showVisitorQR(id, name, company) {
+  const qrDiv = document.getElementById('qr-single');
+  qrDiv.innerHTML = '';
+  document.getElementById('newVisitorQR').style.display = 'block';
+  new QRCode(qrDiv, { text: id, width: 200, height: 200, colorDark: '#1e293b', colorLight: '#ffffff' });
+  window.scrollTo({ top: document.getElementById('newVisitorQR').offsetTop - 100, behavior: 'smooth' });
+}
+
+async function showQRPrintView() {
+  if (visitors.length === 0) await loadVisitors();
+  const area = document.getElementById('qrPrintArea');
+  const grid = document.getElementById('qrPrintGrid');
+  grid.innerHTML = '';
+  area.style.display = 'block';
+
+  visitors.forEach(v => {
+    const item = document.createElement('div');
+    item.className = 'qr-print-item';
+    const qrContainer = document.createElement('div');
+    item.appendChild(qrContainer);
+    const nameDiv = document.createElement('div');
+    nameDiv.className = 'name';
+    nameDiv.textContent = v.name;
+    item.appendChild(nameDiv);
+    const compDiv = document.createElement('div');
+    compDiv.className = 'company';
+    compDiv.textContent = v.company;
+    item.appendChild(compDiv);
+    const idDiv = document.createElement('div');
+    idDiv.style.cssText = 'font-size:10px;color:#94a3b8;margin-top:2px;';
+    idDiv.textContent = v.id;
+    item.appendChild(idDiv);
+    grid.appendChild(item);
+
+    new QRCode(qrContainer, { text: v.id, width: 120, height: 120, colorDark: '#1e293b', colorLight: '#ffffff' });
   });
-  document.querySelectorAll('.form-input.error').forEach(el => el.classList.remove('error'));
-  document.querySelectorAll('.form-error.show').forEach(el => el.classList.remove('show'));
-  document.getElementById('formAlert').classList.remove('show');
+}
 
-  document.getElementById('registrationForm').style.display = 'block';
-  document.getElementById('completePage').classList.remove('show');
-  document.getElementById('qrCodeCanvas').innerHTML = '';
+async function addBooth() {
+  const data = {
+    company: document.getElementById('b-company').value.trim(),
+    contact_name: document.getElementById('b-contact').value.trim(),
+    contact_email: document.getElementById('b-email').value.trim(),
+    category: document.getElementById('b-category').value,
+    products: document.getElementById('b-products').value.trim(),
+    booth_number: document.getElementById('b-number').value.trim()
+  };
 
-  // ステップリセット
-  document.getElementById('step1').classList.add('active');
-  document.getElementById('step1').classList.remove('done');
-  document.getElementById('step2').classList.remove('active', 'done');
-  document.getElementById('step3').classList.remove('active', 'done');
+  if (!data.company) return showAlert('boothAlert', 'error', 'メーカー名は必須です');
 
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  try {
+    await apiCall('addBooth', {}, data);
+    showAlert('boothAlert', 'success', 'ブース登録完了！');
+    ['b-company','b-contact','b-email','b-products','b-number'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+    document.getElementById('b-category').selectedIndex = 0;
+    loadBooths();
+  } catch (e) {
+    showAlert('boothAlert', 'error', 'エラー: ' + e.message);
+  }
+}
+
+async function loadBooths() {
+  try {
+    const result = await apiCall('getBooths');
+    booths = result.data || [];
+    const tbody = document.getElementById('boothTable');
+    tbody.innerHTML = booths.map(b => `
+      <tr>
+        <td>${b.booth_number}</td>
+        <td>${b.company}</td>
+        <td>${b.category}</td>
+        <td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;">${b.products}</td>
+        <td>${b.contact_name}</td>
+        <td><code style="font-size:10px">${b.id}</code></td>
+      </tr>
+    `).join('');
+    document.getElementById('boothCount').textContent = `${booths.length}ブース登録済み`;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+function startReceptionScanner() {
+  document.getElementById('startReceptionScan').style.display = 'none';
+  document.getElementById('stopReceptionScan').style.display = 'inline-flex';
+
+  receptionScanner = new Html5Qrcode('reception-scanner');
+  receptionScanner.start(
+    { facingMode: 'environment' },
+    { fps: 10, qrbox: { width: 250, height: 250 } },
+    async (decodedText) => {
+      await processCheckin(decodedText.trim());
+      receptionScanner.pause(true);
+      setTimeout(() => {
+        try { receptionScanner.resume(); } catch(e) {}
+      }, 3000);
+    },
+    () => {}
+  ).catch(err => {
+    showAlert('checkinResult', 'error', 'カメラ起動失敗: ' + err);
+    document.getElementById('startReceptionScan').style.display = 'inline-flex';
+    document.getElementById('stopReceptionScan').style.display = 'none';
+  });
+}
+
+function stopReceptionScanner() {
+  if (receptionScanner) {
+    try { receptionScanner.stop(); } catch(e) {}
+    receptionScanner = null;
+  }
+  document.getElementById('startReceptionScan').style.display = 'inline-flex';
+  document.getElementById('stopReceptionScan').style.display = 'none';
+}
+
+async function manualCheckin() {
+  const id = document.getElementById('manualCheckinId').value.trim();
+  if (!id) return;
+  await processCheckin(id);
+  document.getElementById('manualCheckinId').value = '';
+}
+
+async function processCheckin(visitorId) {
+  const resultDiv = document.getElementById('checkinResult');
+  try {
+    const result = await apiCall('checkin', { visitorId });
+    const v = result.visitor;
+    document.getElementById('checkinIcon').textContent = result.duplicate ? '⚠️' : '✅';
+    document.getElementById('checkinName').textContent = v.name;
+    document.getElementById('checkinCompany').textContent = v.company + (v.department ? ' ' + v.department : '');
+    document.getElementById('checkinMessage').textContent = result.message;
+    resultDiv.className = 'checkin-result show';
+
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      osc.frequency.value = result.duplicate ? 300 : 800;
+      osc.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.15);
+    } catch(e) {}
+
+    loadCheckins();
+  } catch (e) {
+    document.getElementById('checkinIcon').textContent = '❌';
+    document.getElementById('checkinName').textContent = 'エラー';
+    document.getElementById('checkinCompany').textContent = '';
+    document.getElementById('checkinMessage').textContent = e.message;
+    resultDiv.className = 'checkin-result show';
+  }
+}
+
+async function loadCheckins() {
+  try {
+    const result = await apiCall('getCheckins');
+    const data = (result.data || []).reverse();
+    document.getElementById('checkinTable').innerHTML = data.map(c => `
+      <tr>
+        <td>${String(c.checked_in_at).slice(11,16)}</td>
+        <td><code style="font-size:10px">${c.visitor_id}</code></td>
+        <td>${c.visitor_name}</td>
+        <td>${c.visitor_company}</td>
+      </tr>
+    `).join('');
+  } catch(e) { console.error(e); }
+}
+
+async function initBoothScan() {
+  if (booths.length === 0) {
+    try {
+      const result = await apiCall('getBooths');
+      booths = result.data || [];
+    } catch(e) {}
+  }
+
+  const sel = document.getElementById('currentBooth');
+  const saved = localStorage.getItem('currentBoothId') || '';
+  sel.innerHTML = '<option value="">ブースを選択...</option>' +
+    booths.map(b => `<option value="${b.id}" ${b.id===saved?'selected':''}>${b.booth_number} - ${b.company}</option>`).join('');
+
+  if (saved) {
+    document.getElementById('boothScanArea').style.display = 'block';
+    updateBoothProducts(saved);
+  }
+}
+
+function saveCurrentBooth() {
+  const val = document.getElementById('currentBooth').value;
+  localStorage.setItem('currentBoothId', val);
+  document.getElementById('boothScanArea').style.display = val ? 'block' : 'none';
+  if (val) updateBoothProducts(val);
+}
+
+function updateBoothProducts(boothId) {
+  const booth = booths.find(b => b.id === boothId);
+  if (!booth) return;
+  const sel = document.getElementById('sr-product');
+  const products = String(booth.products).split(',').map(p => p.trim()).filter(Boolean);
+  sel.innerHTML = '<option value="">商品を選択...</option>' +
+    products.map(p => `<option value="${p}">${p}</option>`).join('') +
+    '<option value="その他">その他</option>';
+}
+
+function startBoothScanner() {
+  document.getElementById('startBoothScan').style.display = 'none';
+  document.getElementById('stopBoothScan').style.display = 'inline-flex';
+
+  boothScanner = new Html5Qrcode('booth-scanner');
+  boothScanner.start(
+    { facingMode: 'environment' },
+    { fps: 10, qrbox: { width: 250, height: 250 } },
+    async (decodedText) => {
+      currentVisitorId = decodedText.trim();
+      boothScanner.pause(true);
+      await showBoothVisitorInfo(currentVisitorId);
+    },
+    () => {}
+  ).catch(err => {
+    console.error(err);
+    document.getElementById('startBoothScan').style.display = 'inline-flex';
+    document.getElementById('stopBoothScan').style.display = 'none';
+  });
+}
+
+function stopBoothScanner() {
+  if (boothScanner) {
+    try { boothScanner.stop(); } catch(e) {}
+    boothScanner = null;
+  }
+  document.getElementById('startBoothScan').style.display = 'inline-flex';
+  document.getElementById('stopBoothScan').style.display = 'none';
+}
+
+async function showBoothVisitorInfo(visitorId) {
+  let visitor = visitors.find(v => v.id === visitorId);
+  if (!visitor) {
+    try {
+      const res = await apiCall('getVisitors');
+      visitors = res.data || [];
+      visitor = visitors.find(v => v.id === visitorId);
+    } catch(e) {}
+  }
+
+  const infoDiv = document.getElementById('boothVisitorInfo');
+  if (!visitor) {
+    document.getElementById('boothVisitorDetails').innerHTML =
+      `<p style="color:var(--danger)">来場者が見つかりません: ${visitorId}</p>`;
+    infoDiv.style.display = 'block';
+    setTimeout(() => {
+      try { boothScanner.resume(); } catch(e) {}
+    }, 3000);
+    return;
+  }
+
+  document.getElementById('boothVisitorDetails').innerHTML = `
+    <div style="font-size:20px;font-weight:700;">${visitor.name}</div>
+    <div style="color:var(--text-light);">${visitor.company} ${visitor.department || ''}</div>
+    <div style="font-size:13px;color:var(--text-light);margin-top:4px;">${visitor.email || ''} ${visitor.phone || ''}</div>
+  `;
+  infoDiv.style.display = 'block';
+
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    osc.frequency.value = 600;
+    osc.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.1);
+  } catch(e) {}
+}
+
+function toggleFreeInput() {
+  const sel = document.getElementById('sr-product');
+  const freeGroup = document.getElementById('sr-free-group');
+  freeGroup.style.display = (sel.value === 'その他' || sel.value === '') ? 'block' : 'none';
+  if (sel.value !== 'その他' && sel.value !== '') {
+    document.getElementById('sr-product-free').value = '';
+  }
+}
+
+async function submitSampleRequest() {
+  const boothId = document.getElementById('currentBooth').value;
+  if (!boothId || !currentVisitorId) return;
+
+  const selectedProduct = document.getElementById('sr-product').value;
+  const freeProduct = document.getElementById('sr-product-free').value.trim();
+  const productName = (selectedProduct === 'その他' || selectedProduct === '') ? freeProduct : selectedProduct;
+
+  const data = {
+    visitorId: currentVisitorId,
+    boothId: boothId,
+    product_name: productName,
+    quantity: document.getElementById('sr-quantity').value,
+    notes: document.getElementById('sr-notes').value
+  };
+
+  try {
+    await apiCall('boothVisit', {}, { visitorId: currentVisitorId, boothId });
+    await apiCall('sampleRequest', {}, data);
+    showAlert('sampleAlert', 'success', 'サンプル依頼を送信しました！');
+
+    document.getElementById('sr-product').selectedIndex = 0;
+    document.getElementById('sr-quantity').value = '1';
+    document.getElementById('sr-notes').value = '';
+    currentVisitorId = '';
+
+    setTimeout(() => {
+      document.getElementById('boothVisitorInfo').style.display = 'none';
+      try { boothScanner.resume(); } catch(e) {}
+    }, 2000);
+  } catch (e) {
+    showAlert('sampleAlert', 'error', 'エラー: ' + e.message);
+  }
+}
+
+async function recordBoothVisitOnly() {
+  const boothId = document.getElementById('currentBooth').value;
+  if (!boothId || !currentVisitorId) return;
+
+  try {
+    await apiCall('boothVisit', {}, { visitorId: currentVisitorId, boothId });
+    showAlert('sampleAlert', 'success', '訪問を記録しました');
+    currentVisitorId = '';
+    setTimeout(() => {
+      document.getElementById('boothVisitorInfo').style.display = 'none';
+      try { boothScanner.resume(); } catch(e) {}
+    }, 2000);
+  } catch (e) {
+    showAlert('sampleAlert', 'error', 'エラー: ' + e.message);
+  }
+}
+
+let dashboardData = null;
+
+async function loadDashboard() {
+  try {
+    dashboardData = await apiCall('getDashboard');
+    const s = dashboardData.summary;
+    document.getElementById('stat-visitors').textContent = s.totalVisitors;
+    document.getElementById('stat-checkins').textContent = s.checkedIn;
+    document.getElementById('stat-visits').textContent = s.totalBoothVisits;
+    document.getElementById('stat-samples').textContent = s.totalSampleRequests;
+
+    const sel = document.getElementById('dashBoothFilter');
+    const currentVal = sel.value;
+    sel.innerHTML = '<option value="">全体</option>' +
+      (dashboardData.booths || []).map(b => `<option value="${b.id}">${b.booth_number} - ${b.company}</option>`).join('');
+    sel.value = currentVal;
+
+    renderDashboard(dashboardData);
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+function filterDashboard() {
+  const boothId = document.getElementById('dashBoothFilter').value;
+  if (!dashboardData) return;
+
+  if (boothId) {
+    apiCall('getDashboard', { boothId }).then(data => {
+      renderDashboard({
+        ...dashboardData,
+        boothVisits: data.boothVisits,
+        sampleRequests: data.boothSampleRequests
+      });
+    });
+  } else {
+    renderDashboard(dashboardData);
+  }
+}
+
+function renderDashboard(data) {
+  if (data.boothSummary) {
+    document.getElementById('boothSummaryTable').innerHTML = data.boothSummary.map(b => `
+      <tr>
+        <td>${b.booth_number}</td>
+        <td>${b.company}</td>
+        <td><strong>${b.visitCount}</strong></td>
+        <td><strong>${b.sampleCount}</strong></td>
+      </tr>
+    `).join('');
+  }
+
+  const samples = data.sampleRequests || data.boothSampleRequests || [];
+  document.getElementById('sampleTable').innerHTML = samples.map(s => {
+    const statusClass = s.status === '完了' || s.status === '発送済み' ? 'tag-done' : 'tag-pending';
+    return `<tr>
+      <td>${String(s.requested_at).slice(11,16)}</td>
+      <td>${s.visitor_name}</td>
+      <td>${s.visitor_company}</td>
+      <td>${s.booth_company}</td>
+      <td>${s.product_name}</td>
+      <td>${s.quantity}</td>
+      <td>
+        <span class="tag ${statusClass}" style="cursor:pointer" onclick="openStatusModal('${s.id}','${s.status}')">${s.status}</span>
+      </td>
+    </tr>`;
+  }).join('');
+
+  const checkins = (data.checkins || []).slice().reverse();
+  document.getElementById('dashCheckinTable').innerHTML = checkins.map(c => `
+    <tr>
+      <td>${String(c.checked_in_at).slice(11,16)}</td>
+      <td>${c.visitor_name}</td>
+      <td>${c.visitor_company}</td>
+    </tr>
+  `).join('');
+}
+
+function openStatusModal(sampleId, currentStatus) {
+  document.getElementById('statusSampleId').value = sampleId;
+  document.getElementById('statusSelect').value = currentStatus;
+  document.getElementById('statusModal').classList.add('show');
+}
+
+async function updateStatus() {
+  const id = document.getElementById('statusSampleId').value;
+  const status = document.getElementById('statusSelect').value;
+  try {
+    await apiCall('updateSampleStatus', { id, status });
+    closeModal('statusModal');
+    loadDashboard();
+  } catch(e) {
+    alert('エラー: ' + e.message);
+  }
 }
 </script>
 </body>
