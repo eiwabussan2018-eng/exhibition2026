@@ -644,12 +644,117 @@ footer {
 
 /* ===== 印刷用 ===== */
 @media print {
-  .hero, .steps-bar, .no-qr-banner, footer, #registrationForm { display: none !important; }
+  * { margin: 0; padding: 0; }
+  .hero, .steps-bar, .no-qr-banner, footer, #registrationForm,
+  .complete-card, .hint-box, .no-print { display: none !important; }
   #completePage { display: block !important; }
-  .complete-card {
-    box-shadow: none;
-    border: 1px solid #ccc;
+  main { padding: 0 !important; }
+  #nyujoCard {
+    display: block !important;
+    width: 105mm;
+    min-height: 148mm;
+    border-radius: 0;
+    border: none;
+    margin: 0 auto;
   }
+  .nyujo-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .nyujo-footer { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+
+/* ===== 入場証カード ===== */
+#nyujoCard {
+  display: none;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  overflow: hidden;
+  max-width: 300px;
+  margin: 0 auto 16px;
+}
+.nyujo-header {
+  background: #0d1f5c;
+  padding: 14px 18px 12px;
+  text-align: center;
+  position: relative;
+}
+.nyujo-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #c8a84b, transparent);
+}
+.nyujo-event {
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: rgba(200,168,75,0.8);
+  margin-bottom: 4px;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+.nyujo-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: white;
+  letter-spacing: 1px;
+  font-family: 'Noto Serif JP', serif;
+}
+.nyujo-body {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.nyujo-qr {
+  border: 2px solid #0d1f5c;
+  border-radius: 8px;
+  padding: 8px;
+  background: white;
+}
+.nyujo-qr canvas, .nyujo-qr img { display: block; }
+.nyujo-info {
+  width: 100%;
+  text-align: center;
+  border-top: 1px solid #e0d6c4;
+  padding-top: 12px;
+}
+.nyujo-name {
+  font-size: 22px;
+  font-weight: 700;
+  color: #0d1f5c;
+  margin-bottom: 6px;
+  font-family: 'Noto Serif JP', serif;
+}
+.nyujo-company {
+  font-size: 13px;
+  color: #444;
+  margin-bottom: 3px;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+.nyujo-dept {
+  font-size: 12px;
+  color: #777;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+.nyujo-id {
+  font-size: 10px;
+  color: #aaa;
+  border: 1px dashed #ddd;
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-family: monospace;
+  margin-top: 6px;
+  display: inline-block;
+}
+.nyujo-footer {
+  background: #c8a84b;
+  padding: 8px;
+  text-align: center;
+  font-size: 10px;
+  color: #0d1f5c;
+  font-weight: 700;
+  font-family: 'Noto Sans JP', sans-serif;
+  letter-spacing: 1px;
 }
 </style>
 </head>
@@ -875,9 +980,29 @@ footer {
       事前登録済みの方はスムーズに入場手続きができます。
     </div>
 
-    <button class="btn btn-primary btn-block no-print" onclick="window.print()" style="margin-bottom:12px;">
-      🖨️ この画面を印刷・保存する
+    <button class="btn btn-primary btn-block no-print" onclick="printNyujoCard()" style="margin-bottom:12px;">
+      🖨️ 入場証を印刷する（名札用）
     </button>
+
+    <!-- 入場証カード（印刷時のみ表示） -->
+    <div id="nyujoCard">
+      <div class="nyujo-header">
+        <div class="nyujo-event">EIWA BUSSAN FOOD EXHIBITION 2026</div>
+        <div class="nyujo-title">永和物産 食品展示会 2026</div>
+      </div>
+      <div class="nyujo-body">
+        <div class="nyujo-qr">
+          <div id="nyujoQR"></div>
+        </div>
+        <div class="nyujo-info">
+          <div class="nyujo-name" id="nyujo-name">—</div>
+          <div class="nyujo-company" id="nyujo-company">—</div>
+          <div class="nyujo-dept" id="nyujo-dept"></div>
+          <div class="nyujo-id" id="nyujo-id">—</div>
+        </div>
+      </div>
+      <div class="nyujo-footer">ご来場ありがとうございます</div>
+    </div>
 
     <button class="btn btn-block no-print" style="background:#f0f0f8;color:var(--navy);border:1px solid var(--border);" onclick="resetForm()">
       別の方を登録する
@@ -1074,8 +1199,41 @@ function showCompletePage(visitorId, payload) {
     </tr>
   `).join('');
 
+  // 入場証カードを生成
+  buildNyujoCard(visitorId, payload);
+
   // ページトップへ
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ===========================
+// 入場証 生成・印刷
+// ===========================
+function buildNyujoCard(visitorId, payload) {
+  document.getElementById('nyujo-name').textContent = payload.name;
+  document.getElementById('nyujo-company').textContent = payload.company;
+  document.getElementById('nyujo-dept').textContent = payload.department || '';
+  document.getElementById('nyujo-id').textContent = visitorId;
+
+  const qrDiv = document.getElementById('nyujoQR');
+  qrDiv.innerHTML = '';
+  new QRCode(qrDiv, {
+    text: visitorId,
+    width: 160,
+    height: 160,
+    colorDark: '#0d1f5c',
+    colorLight: '#ffffff'
+  });
+}
+
+function printNyujoCard() {
+  document.getElementById('nyujoCard').style.display = 'block';
+  setTimeout(() => {
+    window.print();
+    setTimeout(() => {
+      document.getElementById('nyujoCard').style.display = 'none';
+    }, 1000);
+  }, 300);
 }
 
 // ===========================
