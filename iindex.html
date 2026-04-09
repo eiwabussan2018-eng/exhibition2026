@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>永和物産 食品展示会 2026 — 来場者事前登録</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ===== CSS変数 ===== */
+:root {
+  --navy:       #0d1f5c;
+  --navy-mid:   #1a3a9e;
+  --navy-light: #2a4aad;
+  --gold:       #c8a84b;
+  --gold-light: #e8cc80;
+  --gold-pale:  #f7f0dc;
+  --cream:      #faf7f0;
+  --white:      #ffffff;
+  --text:       #1a1a2e;
+  --text-mid:   #3a3a5a;
+  --text-light: #6b6b8a;
+  --border:     #ddd5be;
+  --success:    #1a6e35;
+  --success-bg: #e8f7ed;
+  --error:      #8b1a1a;
+  --error-bg:   #fdf0f0;
+  --radius-sm:  8px;
+  --radius:     14px;
+  --radius-lg:  20px;
+  --shadow-sm:  0 2px 8px rgba(13,31,92,0.08);
+  --shadow:     0 4px 20px rgba(13,31,92,0.12);
+  --shadow-lg:  0 8px 40px rgba(13,31,92,0.18);
+}
+
+/* ===== リセット & ベース ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Noto Sans JP', -apple-system, sans-serif;
+  background: var(--cream);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.7;
+}
+
+/* ===== ヒーローヘッダー ===== */
+.hero {
+  background:
+    linear-gradient(160deg, rgba(13,31,92,0.97) 0%, rgba(10,24,72,0.99) 100%);
+  color: var(--white);
+  padding: 48px 24px 52px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 背景の和柄ドット装飾 */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle, rgba(200,168,75,0.08) 1px, transparent 1px);
+  background-size: 28px 28px;
+  pointer-events: none;
+}
+
+/* 上部の金ライン */
+.hero::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+.hero-kamon {
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 18px;
+  border: 2px solid var(--gold);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  position: relative;
+}
+
+.hero-event {
+  font-size: 11px;
+  letter-spacing: 4px;
+  color: var(--gold-light);
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.hero h1 {
+  font-family: 'Noto Serif JP', serif;
+  font-size: clamp(22px, 5vw, 32px);
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: 2px;
+  line-height: 1.4;
+  margin-bottom: 6px;
+}
+
+.hero-subtitle {
+  font-size: 14px;
+  color: rgba(232,204,128,0.8);
+  margin-bottom: 28px;
+}
+
+.hero-info {
+  display: inline-flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.hero-info-item {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(200,168,75,0.25);
+  border-radius: var(--radius-sm);
+  padding: 8px 16px;
+  font-size: 13px;
+  color: rgba(255,255,255,0.85);
+}
+
+.hero-info-item span {
+  color: var(--gold-light);
+  font-weight: 600;
+  margin-right: 4px;
+}
+
+/* ===== ステップ表示 ===== */
+.steps-bar {
+  background: var(--navy);
+  padding: 0 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.steps {
+  display: flex;
+  max-width: 500px;
+  width: 100%;
+}
+
+.step-item {
+  flex: 1;
+  padding: 14px 8px;
+  text-align: center;
+  font-size: 11px;
+  color: rgba(255,255,255,0.4);
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.step-item.active {
+  color: var(--gold-light);
+  border-bottom-color: var(--gold);
+}
+
+.step-item.done {
+  color: rgba(200,168,75,0.6);
+}
+
+.step-item .step-num {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+/* ===== メインコンテンツ ===== */
+main {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 28px 16px 60px;
+}
+
+/* ===== カード ===== */
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 28px 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  position: relative;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 24px; right: 24px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  opacity: 0.4;
+}
+
+.card-title {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-title-icon {
+  font-size: 20px;
+}
+
+.card-desc {
+  font-size: 13px;
+  color: var(--text-light);
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+/* ===== フォーム ===== */
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-group:last-child {
+  margin-bottom: 0;
+}
+
+.form-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-mid);
+  margin-bottom: 6px;
+}
+
+.form-label .req {
+  color: #c0392b;
+  margin-left: 3px;
+  font-size: 11px;
+}
+
+.form-label .opt {
+  color: var(--text-light);
+  font-weight: 400;
+  font-size: 11px;
+  margin-left: 4px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 16px; /* iOS zoom防止: 16px以上 */
+  font-family: inherit;
+  color: var(--text);
+  background: var(--white);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  -webkit-appearance: none;
+}
+
+.form-input:focus {
+  border-color: var(--navy-mid);
+  box-shadow: 0 0 0 3px rgba(26,58,158,0.1);
+}
+
+.form-input::placeholder {
+  color: #bbb8d0;
+  font-size: 14px;
+}
+
+.form-input.error {
+  border-color: #c0392b;
+  box-shadow: 0 0 0 3px rgba(192,57,43,0.1);
+}
+
+.form-hint {
+  font-size: 11px;
+  color: var(--text-light);
+  margin-top: 4px;
+}
+
+.form-error {
+  font-size: 12px;
+  color: #c0392b;
+  margin-top: 4px;
+  display: none;
+}
+
+.form-error.show {
+  display: block;
+}
+
+/* 2カラムグリッド（名前・会社など） */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* ===== ラジオ / チェックボックス ===== */
+.check-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.check-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 14px;
+}
+
+.check-item:hover {
+  border-color: var(--navy-mid);
+  background: rgba(26,58,158,0.03);
+}
+
+.check-item input[type="checkbox"],
+.check-item input[type="radio"] {
+  accent-color: var(--navy-mid);
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.check-item.selected {
+  border-color: var(--navy-mid);
+  background: rgba(26,58,158,0.05);
+}
+
+/* ===== ボタン ===== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 24px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  line-height: 1;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--gold) 0%, #b8922e 100%);
+  color: var(--navy);
+  box-shadow: 0 2px 8px rgba(200,168,75,0.35);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 100%);
+  box-shadow: 0 4px 16px rgba(200,168,75,0.45);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-block {
+  width: 100%;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* ===== アラート ===== */
+.alert {
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  margin-bottom: 16px;
+  display: none;
+  animation: slideDown 0.3s ease;
+}
+
+.alert.show { display: block; }
+
+.alert-success {
+  background: var(--success-bg);
+  color: var(--success);
+  border: 1px solid #a8ddb8;
+}
+
+.alert-error {
+  background: var(--error-bg);
+  color: var(--error);
+  border: 1px solid #f5c0c0;
+}
+
+.alert-info {
+  background: #eef2ff;
+  color: var(--navy);
+  border: 1px solid #c5d0f5;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== 完了画面 ===== */
+#completePage {
+  display: none;
+}
+
+#completePage.show {
+  display: block;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.complete-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 36px 24px;
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border);
+  margin-bottom: 20px;
+}
+
+.complete-mark {
+  width: 72px;
+  height: 72px;
+  background: linear-gradient(135deg, var(--gold), #b8922e);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  margin: 0 auto 20px;
+  box-shadow: 0 4px 20px rgba(200,168,75,0.4);
+}
+
+.complete-title {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 8px;
+}
+
+.complete-message {
+  font-size: 14px;
+  color: var(--text-light);
+  line-height: 1.8;
+  margin-bottom: 24px;
+}
+
+.complete-id {
+  background: var(--gold-pale);
+  border: 1px dashed var(--gold);
+  border-radius: var(--radius-sm);
+  padding: 10px 16px;
+  font-size: 13px;
+  color: var(--navy);
+  margin-bottom: 20px;
+  display: inline-block;
+}
+
+.complete-id strong {
+  font-size: 16px;
+  letter-spacing: 1px;
+  display: block;
+  margin-top: 2px;
+  color: var(--navy);
+}
+
+/* QRコード表示エリア */
+.qr-area {
+  background: var(--white);
+  border: 2px solid var(--navy);
+  border-radius: var(--radius);
+  padding: 20px;
+  display: inline-block;
+  margin: 0 auto 20px;
+  box-shadow: var(--shadow);
+}
+
+.qr-area canvas,
+.qr-area img {
+  display: block;
+  max-width: 200px !important;
+  height: auto !important;
+}
+
+.qr-label {
+  font-size: 12px;
+  color: var(--text-light);
+  margin-top: 12px;
+  text-align: center;
+}
+
+/* ===== ヒントボックス ===== */
+.hint-box {
+  background: var(--gold-pale);
+  border: 1px solid rgba(200,168,75,0.3);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  font-size: 13px;
+  color: var(--text-mid);
+  line-height: 1.7;
+  margin-bottom: 16px;
+}
+
+.hint-box strong {
+  color: var(--navy);
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* ===== 持参不要バナー ===== */
+.no-qr-banner {
+  background: linear-gradient(135deg, var(--navy), var(--navy-mid));
+  color: var(--white);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.no-qr-banner h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--gold-light);
+  margin-bottom: 6px;
+}
+
+.no-qr-banner p {
+  font-size: 13px;
+  color: rgba(255,255,255,0.8);
+  line-height: 1.6;
+}
+
+/* ===== ローディング ===== */
+.spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(13,31,92,0.2);
+  border-top-color: var(--navy);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  vertical-align: middle;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ===== 区切り線 ===== */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+  margin: 20px 0;
+}
+
+/* ===== 同意チェック ===== */
+.consent-area {
+  background: #f9f9fb;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.consent-text {
+  font-size: 12px;
+  color: var(--text-light);
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
+
+.consent-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.consent-check input {
+  accent-color: var(--navy-mid);
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* ===== フッター ===== */
+footer {
+  text-align: center;
+  padding: 20px 16px 40px;
+  font-size: 12px;
+  color: var(--text-light);
+  border-top: 1px solid var(--border);
+}
+
+/* ===== レスポンシブ ===== */
+@media (max-width: 480px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  .hero {
+    padding: 36px 16px 40px;
+  }
+  .card {
+    padding: 22px 18px;
+  }
+}
+
+/* ===== 印刷用 ===== */
+@media print {
+  .hero, .steps-bar, .no-qr-banner, footer, #registrationForm { display: none !important; }
+  #completePage { display: block !important; }
+  .complete-card {
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== ヒーローヘッダー ===== -->
+<div class="hero">
+  <div class="hero-kamon">🌾</div>
+  <div class="hero-event">EIWA BUSSAN FOOD EXHIBITION 2026</div>
+  <h1>永和物産<br>食品展示会 2026</h1>
+  <p class="hero-subtitle">来場者事前登録フォーム</p>
+  <div class="hero-info">
+    <div class="hero-info-item"><span>📅</span>2026年11月（日程調整中）</div>
+    <div class="hero-info-item"><span>📍</span>会場未定</div>
+    <div class="hero-info-item"><span>🎫</span>招待制・入場無料</div>
+  </div>
+</div>
+
+<!-- ===== ステップバー ===== -->
+<div class="steps-bar">
+  <div class="steps">
+    <div class="step-item active" id="step1">
+      <span class="step-num">1</span>
+      情報入力
+    </div>
+    <div class="step-item" id="step2">
+      <span class="step-num">2</span>
+      確認
+    </div>
+    <div class="step-item" id="step3">
+      <span class="step-num">3</span>
+      QR取得
+    </div>
+  </div>
+</div>
+
+<!-- ===== メインコンテンツ ===== -->
+<main>
+
+  <!-- QR不要バナー -->
+  <div class="no-qr-banner">
+    <h3>📱 QRコードを忘れても大丈夫！</h3>
+    <p>当日QRコードをお持ちでない場合は、お名前・会社名をスタッフにお伝えください。<br>事前登録済みの方はスムーズにご入場いただけます。</p>
+  </div>
+
+  <!-- ===== 登録フォーム ===== -->
+  <div id="registrationForm">
+
+    <div class="card">
+      <div class="card-title"><span class="card-title-icon">🏢</span>会社情報</div>
+      <p class="card-desc">お客様の会社情報をご入力ください。</p>
+
+      <div class="form-group">
+        <label class="form-label">会社名 / 店舗名<span class="req">*必須</span></label>
+        <input type="text" class="form-input" id="company" placeholder="例：株式会社〇〇フーズ・〇〇ホテル"
+          autocomplete="organization" inputmode="text">
+        <div class="form-error" id="err-company">会社名 / 店舗名をご入力ください</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">部署名<span class="opt">（任意）</span></label>
+        <input type="text" class="form-input" id="department" placeholder="例：購買部・仕入部・洋食・和食・中華"
+          autocomplete="organization-title">
+      </div>
+
+
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="card-title-icon">👤</span>担当者情報</div>
+      <p class="card-desc">当日ご来場される担当者様の情報をご入力ください。</p>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">姓<span class="req">*</span></label>
+          <input type="text" class="form-input" id="lastName" placeholder="山田"
+            autocomplete="family-name" inputmode="text">
+          <div class="form-error" id="err-lastName">姓をご入力ください</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">名<span class="req">*</span></label>
+          <input type="text" class="form-input" id="firstName" placeholder="太郎"
+            autocomplete="given-name" inputmode="text">
+          <div class="form-error" id="err-firstName">名をご入力ください</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">メールアドレス<span class="req">*必須</span></label>
+        <input type="email" class="form-input" id="email" placeholder="yamada@example.com"
+          autocomplete="email" inputmode="email">
+        <p class="form-hint">QRコードをメールでもお送りします（任意）</p>
+        <div class="form-error" id="err-email">正しいメールアドレスをご入力ください</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">電話番号<span class="opt">（任意）</span></label>
+        <input type="tel" class="form-input" id="phone" placeholder="090-1234-5678"
+          autocomplete="tel" inputmode="tel">
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="card-title-icon">🔍</span>ご興味のあるカテゴリ</div>
+      <p class="card-desc">ご関心のある商品カテゴリをお選びください（複数選択可）。<br>担当スタッフがご案内いたします。</p>
+
+      <div class="check-group" id="categoryGroup">
+        <label class="check-item">
+          <input type="checkbox" value="調味料"> 調味料・ソース・ドレッシング
+        </label>
+        <label class="check-item">
+          <input type="checkbox" value="冷凍食品"> 冷凍食品
+        </label>
+        <label class="check-item">
+          <input type="checkbox" value="乳製品"> 乳製品・チーズ
+        </label>
+        <label class="check-item">
+          <input type="checkbox" value="飲料"> 飲料・ジュース
+        </label>
+        <label class="check-item">
+          <input type="checkbox" value="菓子"> 菓子・スナック
+        </label>
+        <label class="check-item">
+          <input type="checkbox" value="水産加工品"> 水産加工品
+        </label>
+        <label class="check-item">
+          <input type="checkbox" value="畜産加工品"> 畜産加工品・ハム・ソーセージ
+        </label>
+        <label class="check-item">
+          <input type="checkbox" value="農産加工品"> 農産加工品・漬物
+        </label>
+        <label class="check-item">
+          <input type="checkbox" value="健康食品"> 健康食品・サプリメント
+        </label>
+        <label class="check-item">
+          <input type="checkbox" value="その他"> その他・全般
+        </label>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="card-title-icon">💬</span>その他・ご要望<span style="font-size:12px;font-weight:400;color:var(--text-light);margin-left:8px;">（任意）</span></div>
+
+      <div class="form-group">
+        <label class="form-label">当日のご要望・質問など</label>
+        <textarea class="form-input" id="notes" rows="3" placeholder="特定のメーカーのご指名、ご質問などございましたらご記入ください"></textarea>
+      </div>
+
+    </div>
+
+    <!-- 同意エリア -->
+    <div class="consent-area">
+      <div class="consent-text">
+        ご入力いただいた個人情報は、展示会の受付管理・来場確認・ご案内の送付のみに使用いたします。第三者への提供、展示会以外での使用はいたしません。
+      </div>
+      <label class="consent-check">
+        <input type="checkbox" id="consentCheck">
+        個人情報の取り扱いについて同意します
+      </label>
+      <div class="form-error" id="err-consent" style="margin-top:8px;">同意いただく必要があります</div>
+    </div>
+
+    <!-- アラート -->
+    <div class="alert" id="formAlert"></div>
+
+    <!-- 送信ボタン -->
+    <button class="btn btn-primary btn-block" id="submitBtn" onclick="submitRegistration()">
+      <span id="submitBtnText">事前登録する</span>
+      <span id="submitSpinner" style="display:none;" class="spinner"></span>
+    </button>
+
+    <p style="text-align:center;font-size:12px;color:var(--text-light);margin-top:12px;">
+      登録後、このページにQRコードが表示されます。<br>
+      スクリーンショットを保存するか、メールでお受け取りください。
+    </p>
+
+  </div>
+  <!-- /#registrationForm -->
+
+
+  <!-- ===== 完了画面 ===== -->
+  <div id="completePage">
+
+    <div class="complete-card">
+      <div class="complete-mark">✓</div>
+      <div class="complete-title">事前登録が完了しました！</div>
+      <div class="complete-message">
+        ご登録ありがとうございます。<br>
+        下記のQRコードを当日スタッフにお見せください。<br>
+        スムーズにご入場いただけます。
+      </div>
+
+      <div class="complete-id">
+        登録ID
+        <strong id="completeId">—</strong>
+      </div>
+
+      <div>
+        <div class="qr-area">
+          <div id="qrCodeCanvas"></div>
+        </div>
+        <div class="qr-label">📱 このQRコードのスクリーンショットを保存してください</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div style="text-align:left;">
+        <p style="font-size:14px;font-weight:600;color:var(--navy);margin-bottom:10px;">👤 登録内容</p>
+        <table style="width:100%;font-size:13px;border-collapse:collapse;" id="confirmTable"></table>
+      </div>
+    </div>
+
+    <div class="hint-box">
+      <strong>📌 当日の流れ</strong>
+      ① 入口受付でこのQRコードをご提示<br>
+      ② 受付完了後、会場へご入場<br>
+      ③ 各ブースでスタッフにQRコードをご提示いただくとスムーズです
+    </div>
+
+    <div class="hint-box">
+      <strong>💡 QRコードをお忘れの場合</strong>
+      受付スタッフに「お名前」「会社名」をお伝えください。<br>
+      事前登録済みの方はスムーズに入場手続きができます。
+    </div>
+
+    <button class="btn btn-primary btn-block no-print" onclick="window.print()" style="margin-bottom:12px;">
+      🖨️ この画面を印刷・保存する
+    </button>
+
+    <button class="btn btn-block no-print" style="background:#f0f0f8;color:var(--navy);border:1px solid var(--border);" onclick="resetForm()">
+      別の方を登録する
+    </button>
+
+  </div>
+  <!-- /#completePage -->
+
+</main>
+
+<footer>
+  <p>永和物産株式会社　食品展示会 2026</p>
+  <p style="margin-top:4px;">ご不明な点はお問い合わせください</p>
+</footer>
+
+<script>
+// ===========================
+// 設定：GASのURLをここに貼り付けてください
+// ===========================
+// 【重要】GASデプロイ後に以下のURLを書き換えてください
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbyPXwitOCCjEixIZIJOBivlX8FsZIsy9K5FBOCkJzOv06oWRaSzzxvwZgSginv4kaGT/exec';
+// 例: const GAS_URL = 'https://script.google.com/macros/s/XXXXX/exec';
+
+// ===========================
+// チェックアイテムのインタラクション
+// ===========================
+document.querySelectorAll('.check-item').forEach(item => {
+  const input = item.querySelector('input');
+  input.addEventListener('change', () => {
+    item.classList.toggle('selected', input.checked);
+  });
+});
+
+// ===========================
+// バリデーション
+// ===========================
+function validateEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function setError(fieldId, errId, show) {
+  const field = document.getElementById(fieldId);
+  const err   = document.getElementById(errId);
+  if (show) {
+    field.classList.add('error');
+    err.classList.add('show');
+  } else {
+    field.classList.remove('error');
+    err.classList.remove('show');
+  }
+}
+
+function validate() {
+  let ok = true;
+
+  const company = document.getElementById('company').value.trim();
+  setError('company', 'err-company', !company);
+  if (!company) ok = false;
+
+  const lastName = document.getElementById('lastName').value.trim();
+  setError('lastName', 'err-lastName', !lastName);
+  if (!lastName) ok = false;
+
+  const firstName = document.getElementById('firstName').value.trim();
+  setError('firstName', 'err-firstName', !firstName);
+  if (!firstName) ok = false;
+
+  const email = document.getElementById('email').value.trim();
+  const emailBad = !email || !validateEmail(email);
+  setError('email', 'err-email', emailBad);
+  if (emailBad) ok = false;
+
+  const consent = document.getElementById('consentCheck').checked;
+  const errConsent = document.getElementById('err-consent');
+  if (!consent) {
+    errConsent.classList.add('show');
+    ok = false;
+  } else {
+    errConsent.classList.remove('show');
+  }
+
+  return ok;
+}
+
+// ===========================
+// 送信処理
+// ===========================
+async function submitRegistration() {
+  if (!validate()) {
+    showAlert('formAlert', 'error', '⚠️ 必須項目をご確認ください');
+    // エラー箇所へスクロール
+    const firstError = document.querySelector('.form-input.error');
+    if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  // カテゴリ収集
+  const categories = [];
+  document.querySelectorAll('#categoryGroup input:checked').forEach(cb => {
+    categories.push(cb.value);
+  });
+
+  const name = document.getElementById('lastName').value.trim() + ' ' + document.getElementById('firstName').value.trim();
+
+  const payload = {
+    company:    document.getElementById('company').value.trim(),
+    department: document.getElementById('department').value.trim(),
+    name:       name,
+    email:      document.getElementById('email').value.trim(),
+    phone:      document.getElementById('phone').value.trim(),
+    categories: categories.join('・'),
+    notes:      document.getElementById('notes').value.trim(),
+    source:     'web_preregister'
+  };
+
+  // ボタンをローディングに変更
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  document.getElementById('submitBtnText').textContent = '登録中...';
+  document.getElementById('submitSpinner').style.display = 'inline-block';
+  document.getElementById('formAlert').classList.remove('show');
+
+  try {
+    const url = GAS_URL + '?action=addVisitor';
+    const resp = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await resp.json();
+
+    if (!data.success) throw new Error(data.error || '登録に失敗しました');
+
+    // 成功 → 完了画面へ
+    showCompletePage(data.id, payload);
+
+  } catch (e) {
+    // GASが未設定の場合はデモ動作
+    if (GAS_URL === 'ここにGASのURLを貼り付け' || GAS_URL === '') {
+      const demoId = 'V-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+      showCompletePage(demoId, payload);
+    } else {
+      showAlert('formAlert', 'error', '通信エラーが発生しました。時間をおいて再度お試しください。\n詳細: ' + e.message);
+      btn.disabled = false;
+      document.getElementById('submitBtnText').textContent = '事前登録する';
+      document.getElementById('submitSpinner').style.display = 'none';
+    }
+  }
+}
+
+// ===========================
+// 完了画面の表示
+// ===========================
+function showCompletePage(visitorId, payload) {
+  // フォームを非表示
+  document.getElementById('registrationForm').style.display = 'none';
+  document.getElementById('completePage').classList.add('show');
+
+  // ステップ更新
+  document.getElementById('step1').classList.remove('active');
+  document.getElementById('step1').classList.add('done');
+  document.getElementById('step2').classList.add('done');
+  document.getElementById('step3').classList.add('active');
+
+  // ID表示
+  document.getElementById('completeId').textContent = visitorId;
+
+  // QRコード生成
+  const qrDiv = document.getElementById('qrCodeCanvas');
+  qrDiv.innerHTML = '';
+  new QRCode(qrDiv, {
+    text: visitorId,
+    width: 200,
+    height: 200,
+    colorDark: '#0d1f5c',
+    colorLight: '#ffffff'
+  });
+
+  // 登録内容テーブル
+  const rows = [
+    ['お名前',     payload.name],
+    ['会社名',     payload.company],
+    ['部署',       payload.department || '—'],
+    ['メール',     payload.email],
+    ['電話',       payload.phone      || '—'],
+    ['関心カテゴリ', payload.categories || '—'],
+  ];
+
+  document.getElementById('confirmTable').innerHTML = rows.map(([label, val]) => `
+    <tr style="border-bottom:1px solid #eee;">
+      <td style="padding:6px 0;color:#6b6b8a;width:110px;font-size:12px;">${label}</td>
+      <td style="padding:6px 0;font-size:13px;word-break:break-all;">${val}</td>
+    </tr>
+  `).join('');
+
+  // ページトップへ
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ===========================
+// アラート表示
+// ===========================
+function showAlert(elemId, type, message) {
+  const el = document.getElementById(elemId);
+  el.className = 'alert alert-' + type + ' show';
+  el.textContent = message;
+}
+
+// ===========================
+// フォームリセット（別の人を登録）
+// ===========================
+function resetForm() {
+  document.getElementById('company').value = '';
+  document.getElementById('department').value = '';
+  document.getElementById('lastName').value = '';
+  document.getElementById('firstName').value = '';
+  document.getElementById('email').value = '';
+  document.getElementById('phone').value = '';
+  document.getElementById('notes').value = '';
+  document.getElementById('consentCheck').checked = false;
+  document.querySelectorAll('#categoryGroup input').forEach(cb => {
+    cb.checked = false;
+    cb.closest('.check-item').classList.remove('selected');
+  });
+  document.querySelectorAll('.form-input.error').forEach(el => el.classList.remove('error'));
+  document.querySelectorAll('.form-error.show').forEach(el => el.classList.remove('show'));
+  document.getElementById('formAlert').classList.remove('show');
+
+  document.getElementById('registrationForm').style.display = 'block';
+  document.getElementById('completePage').classList.remove('show');
+  document.getElementById('qrCodeCanvas').innerHTML = '';
+
+  // ステップリセット
+  document.getElementById('step1').classList.add('active');
+  document.getElementById('step1').classList.remove('done');
+  document.getElementById('step2').classList.remove('active', 'done');
+  document.getElementById('step3').classList.remove('active', 'done');
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
