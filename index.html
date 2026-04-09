@@ -703,22 +703,19 @@ footer {
       <p class="card-desc">お客様の会社情報をご入力ください。</p>
 
       <div class="form-group">
-        <label class="form-label">会社名<span class="req">*必須</span></label>
-        <input type="text" class="form-input" id="company" placeholder="例：株式会社〇〇フーズ"
+        <label class="form-label">会社名 / 店舗名<span class="req">*必須</span></label>
+        <input type="text" class="form-input" id="company" placeholder="例：株式会社〇〇フーズ・〇〇ホテル"
           autocomplete="organization" inputmode="text">
-        <div class="form-error" id="err-company">会社名をご入力ください</div>
+        <div class="form-error" id="err-company">会社名 / 店舗名をご入力ください</div>
       </div>
 
       <div class="form-group">
         <label class="form-label">部署名<span class="opt">（任意）</span></label>
-        <input type="text" class="form-input" id="department" placeholder="例：仕入部・バイヤー部"
+        <input type="text" class="form-input" id="department" placeholder="例：購買部・仕入部・洋食・和食・中華"
           autocomplete="organization-title">
       </div>
 
-      <div class="form-group">
-        <label class="form-label">役職<span class="opt">（任意）</span></label>
-        <input type="text" class="form-input" id="position" placeholder="例：部長・バイヤー・担当者">
-      </div>
+
     </div>
 
     <div class="card">
@@ -988,7 +985,6 @@ async function submitRegistration() {
   const payload = {
     company:    document.getElementById('company').value.trim(),
     department: document.getElementById('department').value.trim(),
-    position:   document.getElementById('position').value.trim(),
     name:       name,
     email:      document.getElementById('email').value.trim(),
     phone:      document.getElementById('phone').value.trim(),
@@ -1066,7 +1062,6 @@ function showCompletePage(visitorId, payload) {
     ['お名前',     payload.name],
     ['会社名',     payload.company],
     ['部署',       payload.department || '—'],
-    ['役職',       payload.position   || '—'],
     ['メール',     payload.email],
     ['電話',       payload.phone      || '—'],
     ['関心カテゴリ', payload.categories || '—'],
@@ -1098,7 +1093,6 @@ function showAlert(elemId, type, message) {
 function resetForm() {
   document.getElementById('company').value = '';
   document.getElementById('department').value = '';
-  document.getElementById('position').value = '';
   document.getElementById('lastName').value = '';
   document.getElementById('firstName').value = '';
   document.getElementById('email').value = '';
