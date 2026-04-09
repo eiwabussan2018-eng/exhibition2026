@@ -801,16 +801,6 @@ footer {
         <textarea class="form-input" id="notes" rows="3" placeholder="特定のメーカーのご指名、ご質問などございましたらご記入ください"></textarea>
       </div>
 
-      <div class="form-group">
-        <label class="form-label">来場人数<span class="opt">（任意）</span></label>
-        <select class="form-input" id="groupSize">
-          <option value="1">1名</option>
-          <option value="2">2名</option>
-          <option value="3">3名</option>
-          <option value="4">4名</option>
-          <option value="5以上">5名以上</option>
-        </select>
-      </div>
     </div>
 
     <!-- 同意エリア -->
@@ -911,7 +901,7 @@ footer {
 // 設定：GASのURLをここに貼り付けてください
 // ===========================
 // 【重要】GASデプロイ後に以下のURLを書き換えてください
-const GAS_URL = 'ここにGASのURLを貼り付け';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbyPXwitOCCjEixIZIJOBivlX8FsZIsy9K5FBOCkJzOv06oWRaSzzxvwZgSginv4kaGT/exec';
 // 例: const GAS_URL = 'https://script.google.com/macros/s/XXXXX/exec';
 
 // ===========================
@@ -1004,7 +994,6 @@ async function submitRegistration() {
     phone:      document.getElementById('phone').value.trim(),
     categories: categories.join('・'),
     notes:      document.getElementById('notes').value.trim(),
-    groupSize:  document.getElementById('groupSize').value,
     source:     'web_preregister'
   };
 
@@ -1081,7 +1070,6 @@ function showCompletePage(visitorId, payload) {
     ['メール',     payload.email],
     ['電話',       payload.phone      || '—'],
     ['関心カテゴリ', payload.categories || '—'],
-    ['来場人数',   payload.groupSize + '名'],
   ];
 
   document.getElementById('confirmTable').innerHTML = rows.map(([label, val]) => `
@@ -1116,7 +1104,6 @@ function resetForm() {
   document.getElementById('email').value = '';
   document.getElementById('phone').value = '';
   document.getElementById('notes').value = '';
-  document.getElementById('groupSize').selectedIndex = 0;
   document.getElementById('consentCheck').checked = false;
   document.querySelectorAll('#categoryGroup input').forEach(cb => {
     cb.checked = false;
