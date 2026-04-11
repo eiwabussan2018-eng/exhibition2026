@@ -479,7 +479,7 @@ tr:hover { background: #f8fafc; }
     <div class="table-wrap">
       <table>
         <thead>
-          <tr><th>番号</th><th>メーカー名</th><th>カテゴリ</th><th>商品</th><th>担当者</th><th></th></tr>
+          <tr><th>番号</th><th>メーカー名</th><th>カテゴリ</th><th>商品</th><th>担当者</th><th>ブース専用URL</th></tr>
         </thead>
         <tbody id="boothTable"></tbody>
       </table>
@@ -561,14 +561,10 @@ tr:hover { background: #f8fafc; }
       <hr style="margin:12px 0;border:none;border-top:1px solid var(--border);">
       <h3>サンプル依頼</h3>
       <div class="form-group">
-        <label>商品名（プルダウンから選択）</label>
-        <select id="sr-product" onchange="toggleFreeInput()">
+        <label>商品名</label>
+        <select id="sr-product">
           <option value="">商品を選択...</option>
         </select>
-      </div>
-      <div class="form-group" id="sr-free-group" style="display:none;">
-        <label>商品名（自由記入）</label>
-        <input type="text" id="sr-product-free" placeholder="商品名を入力してください" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:15px;">
       </div>
       <div class="form-group">
         <label>数量</label>
@@ -869,20 +865,38 @@ async function loadBooths() {
     const result = await apiCall('getBooths');
     booths = result.data || [];
     const tbody = document.getElementById('boothTable');
-    tbody.innerHTML = booths.map(b => `
-      <tr>
-        <td>${b.booth_number}</td>
-        <td>${b.company}</td>
-        <td>${b.category}</td>
-        <td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;">${b.products}</td>
-        <td>${b.contact_name}</td>
-        <td><code style="font-size:10px">${b.id}</code></td>
-      </tr>
-    `).join('');
+    tbody.innerHTML = booths.map(b => {
+      // ブース専用URL（booth_受付画面_トークン版.html と同じフォルダに置いた場合）
+      const boothPageUrl = 'booth_受付画面_トークン版.html?token=' + (b.token || '') + '&gas=' + encodeURIComponent(GAS_URL);
+      const urlCell = b.token
+        ? `<a href="${boothPageUrl}" target="_blank"
+             style="font-size:11px;color:#1a3a9e;margin-right:4px;">🔗 開く</a>
+           <button class="btn btn-outline btn-sm" onclick="copyBoothUrl('${boothPageUrl}')">コピー</button>`
+        : '<span style="color:#aaa;font-size:11px;">トークンなし</span>';
+      return `
+        <tr>
+          <td>${b.booth_number}</td>
+          <td>${b.company}</td>
+          <td>${b.category}</td>
+          <td style="max-width:100px;overflow:hidden;text-overflow:ellipsis;">${b.products}</td>
+          <td>${b.contact_name}</td>
+          <td>${urlCell}</td>
+        </tr>
+      `;
+    }).join('');
     document.getElementById('boothCount').textContent = `${booths.length}ブース登録済み`;
   } catch (e) {
     console.error(e);
   }
+}
+
+// URLをクリップボードにコピーする
+function copyBoothUrl(url) {
+  navigator.clipboard.writeText(url).then(() => {
+    alert('✅ URLをコピーしました！\nメーカー担当者にこのURLをLINEやメールで送ってください。');
+  }).catch(() => {
+    window.prompt('このURLを全選択してコピーしてください：', url);
+  });
 }
 
 function startReceptionScanner() {
@@ -1073,27 +1087,14 @@ async function showBoothVisitorInfo(visitorId) {
   } catch(e) {}
 }
 
-function toggleFreeInput() {
-  const sel = document.getElementById('sr-product');
-  const freeGroup = document.getElementById('sr-free-group');
-  freeGroup.style.display = (sel.value === 'その他' || sel.value === '') ? 'block' : 'none';
-  if (sel.value !== 'その他' && sel.value !== '') {
-    document.getElementById('sr-product-free').value = '';
-  }
-}
-
 async function submitSampleRequest() {
   const boothId = document.getElementById('currentBooth').value;
   if (!boothId || !currentVisitorId) return;
 
-  const selectedProduct = document.getElementById('sr-product').value;
-  const freeProduct = document.getElementById('sr-product-free').value.trim();
-  const productName = (selectedProduct === 'その他' || selectedProduct === '') ? freeProduct : selectedProduct;
-
   const data = {
     visitorId: currentVisitorId,
     boothId: boothId,
-    product_name: productName,
+    product_name: document.getElementById('sr-product').value,
     quantity: document.getElementById('sr-quantity').value,
     notes: document.getElementById('sr-notes').value
   };
@@ -1176,14 +1177,18 @@ function filterDashboard() {
 
 function renderDashboard(data) {
   if (data.boothSummary) {
-    document.getElementById('boothSummaryTable').innerHTML = data.boothSummary.map(b => `
-      <tr>
+    document.getElementById('boothSummaryTable').innerHTML = data.boothSummary.map(b => {
+      const boothPageUrl = 'booth_受付画面_トークン版.html?token=' + (b.token || '') + '&gas=' + encodeURIComponent(GAS_URL);
+      const urlBtn = b.token
+        ? `<button class="btn btn-outline btn-sm" style="margin-left:6px;" onclick="copyBoothUrl('${boothPageUrl}')">URL</button>`
+        : '';
+      return `<tr>
         <td>${b.booth_number}</td>
-        <td>${b.company}</td>
+        <td>${b.company}${urlBtn}</td>
         <td><strong>${b.visitCount}</strong></td>
         <td><strong>${b.sampleCount}</strong></td>
-      </tr>
-    `).join('');
+      </tr>`;
+    }).join('');
   }
 
   const samples = data.sampleRequests || data.boothSampleRequests || [];
