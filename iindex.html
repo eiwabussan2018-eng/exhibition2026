@@ -1144,6 +1144,7 @@ async function submitRegistration() {
 
   const name = document.getElementById('lastName').value.trim() + ' ' + document.getElementById('firstName').value.trim();
 
+  const selectedType = document.querySelector('input[name="businessType"]:checked');
   const payload = {
     company:    document.getElementById('company').value.trim(),
     department: document.getElementById('department').value.trim(),
