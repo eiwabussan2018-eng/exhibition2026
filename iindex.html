@@ -1136,7 +1136,6 @@ async function submitRegistration() {
   }
 
   // ★業態未選択チェック（ここを追加）
-  const selectedType = document.querySelector('input[name="businessType"]:checked');
   if (!selectedType) {
     document.getElementById('err-businessType').classList.add('show');
     document.getElementById('businessTypeGroup').scrollIntoView({ behavior: 'smooth', block: 'center' });
