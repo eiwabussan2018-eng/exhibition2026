@@ -1120,68 +1120,78 @@ function validate() {
   } else {
     errConsent.classList.remove('show');
   }
+// ===========================
+  // 送信処理
+  // ===========================
+  async function submitRegistration() {
+    if (!validate()) {
+      showAlert('formAlert', 'error', '⚠️ 必須項目をご確認ください');
+      const firstError = document.querySelector('.form-input.error');
+      if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
 
+    // ★業態未選択チェック
+    if (!document.querySelector('input[name="businessType"]:checked')) {
+      document.getElementById('err-businessType').classList.add('show');
+      document.getElementById('businessTypeGroup').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    // カテゴリ収集
+    const categories = [];
+    document.querySelectorAll('#categoryGroup input:checked').forEach(cb => {
+      categories.push(cb.value);
+    });
+
+    const name = document.getElementById('lastName').value.trim() + ' ' + document.getElementById('firstName').value.trim();
+
+    const payload = {
+      company:       document.getElementById('company').value.trim(),
+      department:    document.getElementById('department').value.trim(),
+      name:          name,
+      email:         document.getElementById('email').value.trim(),
+      phone:         document.getElementById('phone').value.trim(),
+      categories:    categories.join('・'),
+      notes:         document.getElementById('notes').value.trim(),
+      source:        'web_preregister',
+      business_type: document.querySelector('input[name="businessType"]:checked')?.value || ''
+    };
+
+    // ボタンをローディングに変更
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    document.getElementById('submitBtnText').textContent = '登録中...';
+    document.getElementById('submitSpinner').style.display = 'inline-block';
+    document.getElementById('formAlert').classList.remove('show');
+
+    try {
+      const url = GAS_URL + '?action=addVisitor';
+      const resp = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(payload)
+      });
+      const data = await resp.json();
+      if (!data.success) throw new Error(data.error || '登録に失敗しました');
+      // 成功 → 完了画面へ
+      showCompletePage(data.id, payload);
+    } catch (e) {
+      // GASが未設定の場合はデモ動作
+      if (GAS_URL === 'ここにGASのURLを貼り付け' || GAS_URL === '') {
+        const demoId = 'V-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+        showCompletePage(demoId, payload);
+      } else {
+        showAlert('formAlert', 'error', '通信エラーが発生しました。時間をおいて再度お試しください。\n詳細: ' + e.message);
+        btn.disabled = false;
+        document.getElementById('submitBtnText').textContent = '事前登録する';
+        document.getElementById('submitSpinner').style.display = 'none';
+      }
+    }
+  }
   return ok;
 }
 
-// ===========================
-// 送信処理
-// ===========================
-async function submitRegistration() {
-  if (!validate()) {
-    showAlert('formAlert', 'error', '⚠️ 必須項目をご確認ください');
-    const firstError = document.querySelector('.form-input.error');
-    if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    return;
-  }
-
-  // ★業態未選択チェック（ここを追加）
-  if (!document.querySelector('input[name="businessType"]:checked')) {
-    document.getElementById('err-businessType').classList.add('show');
-    document.getElementById('businessTypeGroup').scrollIntoView({ behavior: 'smooth', block: 'center' });
-    return;
-  }
-  // カテゴリ収集
-  const categories = [];
-  document.querySelectorAll('#categoryGroup input:checked').forEach(cb => {
-    categories.push(cb.value);
-  });
-  const name = document.getElementById('lastName').value.trim() + ' ' + document.getElementById('firstName').value.trim();
-  // ボタンをローディングに変更
-  const btn = document.getElementById('submitBtn');
-  btn.disabled = true;
-  document.getElementById('submitBtnText').textContent = '登録中...';
-  document.getElementById('submitSpinner').style.display = 'inline-block';
-  document.getElementById('formAlert').classList.remove('show');
-
-  try {
-    const url = GAS_URL + '?action=addVisitor';
-    const resp = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify(payload)
-    });
-
-    const data = await resp.json();
-
-    if (!data.success) throw new Error(data.error || '登録に失敗しました');
-
-    // 成功 → 完了画面へ
-    showCompletePage(data.id, payload);
-
-  } catch (e) {
-    // GASが未設定の場合はデモ動作
-    if (GAS_URL === 'ここにGASのURLを貼り付け' || GAS_URL === '') {
-      const demoId = 'V-' + Math.random().toString(36).substr(2, 6).toUpperCase();
-      showCompletePage(demoId, payload);
-    } else {
-      showAlert('formAlert', 'error', '通信エラーが発生しました。時間をおいて再度お試しください。\n詳細: ' + e.message);
-      btn.disabled = false;
-      document.getElementById('submitBtnText').textContent = '事前登録する';
-      document.getElementById('submitSpinner').style.display = 'none';
-    }
-  }
-}
 
 // ===========================
 // 完了画面の表示
