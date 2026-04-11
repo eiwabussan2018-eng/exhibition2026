@@ -1160,7 +1160,7 @@ async function submitRegistration() {
     categories: categories.join('・'),
     notes:      document.getElementById('notes').value.trim(),
     source:     'web_preregister'
-    business_type: selectedType ? selectedType.value : ''  
+    business_type: document.querySelector('input[name="businessType"]:checked')?.value || ''
   };
 
   // ボタンをローディングに変更
