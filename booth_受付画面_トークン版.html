@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>永和物産 食品展示会 2026 - ブース受付（メーカー様専用）</title>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<style>
+:root {
+  --primary: #1a3a9e;
+  --primary-dark: #102880;
+  --accent: #d4b060;
+  --accent-dark: #b8923a;
+  --success: #2e7d32;
+  --warning: #ea580c;
+  --danger: #c62828;
+  --bg: #f5efe4;
+  --card: #ffffff;
+  --text: #1a1a2e;
+  --text-light: #5a5a7a;
+  --border: #e0d6c4;
+  --radius: 12px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding-bottom: 40px;
+}
+.header {
+  background: linear-gradient(160deg, #2a4aad 0%, #102880 60%, #1a3a9e 100%);
+  color: white;
+  padding: 20px 20px 16px;
+  text-align: center;
+  box-shadow: 0 2px 12px rgba(13,21,64,0.4);
+  border-bottom: 2px solid var(--accent);
+}
+.header .event-name { font-size: 11px; letter-spacing: 3px; color: var(--accent); font-weight: 600; margin-bottom: 6px; text-transform: uppercase; }
+.header h1 { font-size: 20px; font-weight: 700; color: #ffffff; }
+.header .booth-name { font-size: 15px; color: var(--accent); margin-top: 6px; font-weight: 600; }
+.page { padding: 16px; max-width: 600px; margin: 0 auto; }
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(13,21,64,0.1);
+  border-top: 3px solid var(--accent);
+}
+.card h2 { font-size: 16px; margin-bottom: 12px; color: var(--primary); font-weight: 700; }
+.card h3 { font-size: 14px; margin-bottom: 8px; color: var(--text-light); }
+.form-group { margin-bottom: 14px; }
+.form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%; padding: 10px 12px; border: 1px solid var(--border);
+  border-radius: 8px; font-size: 15px; outline: none; transition: border-color 0.2s;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--accent); }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 10px 20px; border: none; border-radius: 8px; font-size: 14px;
+  font-weight: 600; cursor: pointer; transition: all 0.2s;
+}
+.btn-primary { background: var(--accent); color: var(--primary-dark); font-weight: 700; }
+.btn-primary:hover { background: var(--accent-dark); color: white; }
+.btn-success { background: var(--success); color: white; }
+.btn-danger { background: var(--danger); color: white; }
+.btn-outline { background: transparent; color: var(--accent-dark); border: 1px solid var(--accent); }
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+.btn-block { width: 100%; }
+.alert { padding: 14px 16px; border-radius: 8px; margin-bottom: 12px; font-size: 14px; display: none; }
+.alert.show { display: block; animation: fadeIn 0.3s; }
+.alert-success { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+.alert-error { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+.alert-info { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+.tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+.tag-pending { background: #fef3c7; color: #92400e; }
+.tag-done { background: #dcfce7; color: #166534; }
+.table-wrap { overflow-x: auto; margin: 12px -8px; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
+th { font-weight: 600; color: var(--text-light); font-size: 12px; }
+.error-screen { text-align: center; padding: 60px 20px; }
+.error-screen .icon { font-size: 60px; margin-bottom: 16px; }
+.error-screen h2 { color: var(--danger); margin-bottom: 8px; }
+.visitor-found { background: #f0fdf4; border: 2px solid #22c55e; border-radius: var(--radius); padding: 16px; margin-bottom: 16px; }
+.visitor-found .name { font-size: 22px; font-weight: 700; color: var(--primary); }
+.visitor-found .company { font-size: 14px; color: var(--text-light); margin-top: 4px; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="event-name">永和物産 食品展示会 2026</div>
+  <h1>ブース受付システム</h1>
+  <div class="booth-name" id="headerBoothName">読み込み中...</div>
+</div>
+
+<div class="page">
+
+  <!-- エラー表示（トークン無効時） -->
+  <div id="errorScreen" class="error-screen" style="display:none;">
+    <div class="icon">🔒</div>
+    <h2>アクセスできません</h2>
+    <p style="color:var(--text-light);font-size:14px;margin-top:8px;">
+      URLが正しくないか、有効期限が切れています。<br>
+      永和物産の担当者にお問い合わせください。
+    </p>
+  </div>
+
+  <!-- メインコンテンツ（トークン認証後に表示） -->
+  <div id="mainContent" style="display:none;">
+
+    <div class="card">
+      <h2>来場者QRスキャン</h2>
+      <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">
+        来場者のQRコードをスキャンしてください
+      </p>
+      <div id="booth-scanner"></div>
+      <div style="margin-top:12px;text-align:center;">
+        <button class="btn btn-primary" id="startBoothScan" onclick="startScanner()">📷 カメラを起動</button>
+        <button class="btn btn-danger" id="stopBoothScan" onclick="stopScanner()" style="display:none;">カメラを停止</button>
+      </div>
+    </div>
+
+    <div class="card" id="manualInputCard">
+      <h3>手動入力（QRが読めない場合）</h3>
+      <div style="display:flex;gap:8px;">
+        <input type="text" id="manualVisitorId" placeholder="来場者ID（例: V-ABC123）"
+          style="flex:1;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:15px;">
+        <button class="btn btn-primary" onclick="processVisitor(document.getElementById('manualVisitorId').value.trim())">確認</button>
+      </div>
+    </div>
+
+    <!-- 来場者情報 + サンプル依頼フォーム -->
+    <div id="visitorPanel" style="display:none;">
+      <div class="visitor-found" id="visitorFound">
+        <div class="name" id="visitorName"></div>
+        <div class="company" id="visitorCompany"></div>
+      </div>
+
+      <div class="card">
+        <h2>サンプル依頼</h2>
+        <div class="form-group">
+          <label>商品名</label>
+          <select id="sr-product">
+            <option value="">商品を選択...</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>数量</label>
+          <input type="number" id="sr-quantity" value="1" min="1" max="99">
+        </div>
+        <div class="form-group">
+          <label>備考（配送先・用途など）</label>
+          <textarea id="sr-notes" rows="2" placeholder="例：〇〇支店へ発送 / 社内試食用"></textarea>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-success btn-block" onclick="submitSampleRequest()">✅ サンプル依頼を送信</button>
+          <button class="btn btn-outline" onclick="recordVisitOnly()">訪問のみ記録</button>
+        </div>
+        <div class="alert" id="sampleAlert" style="margin-top:12px;"></div>
+      </div>
+    </div>
+
+    <!-- サンプル依頼一覧 -->
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <h3>本日のサンプル依頼一覧</h3>
+        <button class="btn btn-outline btn-sm" onclick="loadSamples()">更新</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>時刻</th><th>来場者</th><th>会社</th><th>商品</th><th>数量</th><th>状態</th></tr>
+          </thead>
+          <tbody id="sampleTable"></tbody>
+        </table>
+      </div>
+      <p style="font-size:12px;color:var(--text-light);margin-top:8px;" id="sampleCount"></p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ============================================================
+// URLからトークンを取得
+// ============================================================
+const urlParams = new URLSearchParams(window.location.search);
+const TOKEN = urlParams.get('token') || '';
+let GAS_URL = '';
+let boothInfo = null;
+let currentVisitorId = '';
+let scanner = null;
+
+// GAS URLはこのページを配信するHTMLに埋め込むか、
+// ローカルストレージから取得する（管理画面と同じドメインの場合）
+// ここでは localStorage から取得する方式にしています
+GAS_URL = localStorage.getItem('gasUrl') || '';
+
+// ============================================================
+// 起動時の処理
+// ============================================================
+async function init() {
+  if (!TOKEN) {
+    showError('トークンがURLに含まれていません。');
+    return;
+  }
+
+  if (!GAS_URL) {
+    // GAS URLが未設定の場合はURLパラメータからも取得を試みる
+    GAS_URL = urlParams.get('gas') || '';
+    if (!GAS_URL) {
+      showError('システムが設定されていません。管理者にお問い合わせください。');
+      return;
+    }
+  }
+
+  try {
+    const result = await apiCall('getBoothByToken', { token: TOKEN });
+    boothInfo = result.booth;
+    document.getElementById('headerBoothName').textContent =
+      boothInfo.booth_number + ' ' + boothInfo.company;
+    document.getElementById('errorScreen').style.display = 'none';
+    document.getElementById('mainContent').style.display = 'block';
+
+    // 商品リストをセット
+    setProductOptions(boothInfo.products);
+
+    // サンプル依頼一覧を読み込む
+    await loadSamples();
+  } catch (e) {
+    showError(e.message);
+  }
+}
+
+function showError(msg) {
+  document.getElementById('errorScreen').style.display = 'block';
+  document.getElementById('mainContent').style.display = 'none';
+  document.getElementById('headerBoothName').textContent = 'アクセスエラー';
+  console.error(msg);
+}
+
+function setProductOptions(productsStr) {
+  const sel = document.getElementById('sr-product');
+  const products = String(productsStr || '').split(',').map(p => p.trim()).filter(Boolean);
+  sel.innerHTML = '<option value="">商品を選択...</option>' +
+    products.map(p => `<option value="${p}">${p}</option>`).join('') +
+    '<option value="その他">その他</option>';
+}
+
+// ============================================================
+// API呼び出し
+// ============================================================
+async function apiCall(action, params = {}, body = null) {
+  if (!GAS_URL) throw new Error('GAS URLが設定されていません');
+
+  let url = GAS_URL + '?action=' + action;
+  for (let key in params) {
+    url += '&' + encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
+  }
+
+  const options = { method: body ? 'POST' : 'GET' };
+  if (body) {
+    options.headers = { 'Content-Type': 'text/plain' };
+    options.body = JSON.stringify(body);
+  }
+
+  const resp = await fetch(url, options);
+  const data = await resp.json();
+  if (!data.success && data.error) throw new Error(data.error);
+  return data;
+}
+
+function showAlert(elemId, type, message) {
+  const el = document.getElementById(elemId);
+  el.className = 'alert alert-' + type + ' show';
+  el.textContent = message;
+  if (type === 'success') setTimeout(() => el.classList.remove('show'), 4000);
+}
+
+// ============================================================
+// QRスキャナー
+// ============================================================
+function startScanner() {
+  document.getElementById('startBoothScan').style.display = 'none';
+  document.getElementById('stopBoothScan').style.display = 'inline-flex';
+
+  scanner = new Html5Qrcode('booth-scanner');
+  scanner.start(
+    { facingMode: 'environment' },
+    { fps: 10, qrbox: { width: 250, height: 250 } },
+    async (decodedText) => {
+      scanner.pause(true);
+      await processVisitor(decodedText.trim());
+    },
+    () => {}
+  ).catch(err => {
+    console.error(err);
+    document.getElementById('startBoothScan').style.display = 'inline-flex';
+    document.getElementById('stopBoothScan').style.display = 'none';
+  });
+}
+
+function stopScanner() {
+  if (scanner) {
+    try { scanner.stop(); } catch(e) {}
+    scanner = null;
+  }
+  document.getElementById('startBoothScan').style.display = 'inline-flex';
+  document.getElementById('stopBoothScan').style.display = 'none';
+}
+
+// ============================================================
+// 来場者情報を取得して表示
+// ============================================================
+async function processVisitor(visitorId) {
+  if (!visitorId) return;
+  currentVisitorId = visitorId;
+  document.getElementById('manualVisitorId').value = '';
+
+  try {
+    // ブース訪問を記録しながら来場者情報を取得
+    const result = await apiCall('boothVisitByToken', {}, {
+      token: TOKEN,
+      visitorId: visitorId
+    });
+
+    document.getElementById('visitorName').textContent = result.visitor.name;
+    document.getElementById('visitorCompany').textContent =
+      result.visitor.company + (result.visitor.department ? ' ' + result.visitor.department : '');
+    document.getElementById('visitorPanel').style.display = 'block';
+
+    // 音を鳴らす
+    playBeep(600);
+
+    // フォームをリセット
+    document.getElementById('sr-product').selectedIndex = 0;
+    document.getElementById('sr-quantity').value = '1';
+    document.getElementById('sr-notes').value = '';
+    document.getElementById('sampleAlert').classList.remove('show');
+
+    // スムーズスクロール
+    setTimeout(() => {
+      document.getElementById('visitorPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+
+  } catch (e) {
+    alert('エラー: ' + e.message);
+    currentVisitorId = '';
+    // スキャナー再開
+    try { if (scanner) scanner.resume(); } catch(ex) {}
+  }
+}
+
+function playBeep(freq) {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    osc.frequency.value = freq;
+    osc.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.12);
+  } catch(e) {}
+}
+
+// ============================================================
+// サンプル依頼を送信
+// ============================================================
+async function submitSampleRequest() {
+  if (!currentVisitorId) return;
+
+  const product = document.getElementById('sr-product').value;
+  const quantity = document.getElementById('sr-quantity').value;
+  const notes = document.getElementById('sr-notes').value;
+
+  try {
+    await apiCall('sampleRequestByToken', {}, {
+      token: TOKEN,
+      visitorId: currentVisitorId,
+      product_name: product,
+      quantity: quantity,
+      notes: notes
+    });
+    showAlert('sampleAlert', 'success', '✅ サンプル依頼を送信しました！');
+    playBeep(800);
+    currentVisitorId = '';
+
+    setTimeout(() => {
+      document.getElementById('visitorPanel').style.display = 'none';
+      loadSamples();
+      try { if (scanner) scanner.resume(); } catch(e) {}
+    }, 2000);
+  } catch (e) {
+    showAlert('sampleAlert', 'error', 'エラー: ' + e.message);
+  }
+}
+
+// ============================================================
+// 訪問のみ記録（サンプルなし）
+// ============================================================
+async function recordVisitOnly() {
+  if (!currentVisitorId) return;
+
+  try {
+    showAlert('sampleAlert', 'success', '訪問を記録しました');
+    currentVisitorId = '';
+
+    setTimeout(() => {
+      document.getElementById('visitorPanel').style.display = 'none';
+      loadSamples();
+      try { if (scanner) scanner.resume(); } catch(e) {}
+    }, 1500);
+  } catch (e) {
+    showAlert('sampleAlert', 'error', 'エラー: ' + e.message);
+  }
+}
+
+// ============================================================
+// サンプル依頼一覧を読み込む
+// ============================================================
+async function loadSamples() {
+  try {
+    const result = await apiCall('getBoothSamplesByToken', { token: TOKEN });
+    const samples = result.data || [];
+
+    document.getElementById('sampleTable').innerHTML = samples.map(s => {
+      const statusClass = (s.status === '完了' || s.status === '発送済み') ? 'tag-done' : 'tag-pending';
+      const time = String(s.requested_at).slice(11, 16);
+      return `<tr>
+        <td>${time}</td>
+        <td>${s.visitor_name}</td>
+        <td style="max-width:100px;overflow:hidden;text-overflow:ellipsis;">${s.visitor_company}</td>
+        <td>${s.product_name}</td>
+        <td>${s.quantity}</td>
+        <td><span class="tag ${statusClass}">${s.status}</span></td>
+      </tr>`;
+    }).join('') || '<tr><td colspan="6" style="text-align:center;color:var(--text-light);padding:20px;">まだ依頼はありません</td></tr>';
+
+    document.getElementById('sampleCount').textContent = `${samples.length}件のサンプル依頼`;
+  } catch(e) {
+    console.error(e);
+  }
+}
+
+// ============================================================
+// 起動
+// ============================================================
+init();
+</script>
+</body>
+</html>
