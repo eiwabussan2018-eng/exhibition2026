@@ -1136,33 +1136,17 @@ async function submitRegistration() {
   }
 
   // ★業態未選択チェック（ここを追加）
-  if (!selectedType) {
+  if (!document.querySelector('input[name="businessType"]:checked')) {
     document.getElementById('err-businessType').classList.add('show');
     document.getElementById('businessTypeGroup').scrollIntoView({ behavior: 'smooth', block: 'center' });
     return;
   }
-
   // カテゴリ収集
   const categories = [];
   document.querySelectorAll('#categoryGroup input:checked').forEach(cb => {
     categories.push(cb.value);
   });
-
   const name = document.getElementById('lastName').value.trim() + ' ' + document.getElementById('firstName').value.trim();
-
-  const selectedType = document.querySelector('input[name="businessType"]:checked');
-  const payload = {
-    company:    document.getElementById('company').value.trim(),
-    department: document.getElementById('department').value.trim(),
-    name:       name,
-    email:      document.getElementById('email').value.trim(),
-    phone:      document.getElementById('phone').value.trim(),
-    categories: categories.join('・'),
-    notes:      document.getElementById('notes').value.trim(),
-    source:     'web_preregister',
-    business_type: document.querySelector('input[name="businessType"]:checked')?.value || ''
-  };
-
   // ボタンをローディングに変更
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
