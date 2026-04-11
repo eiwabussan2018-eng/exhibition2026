@@ -1154,6 +1154,7 @@ async function submitRegistration() {
     categories: categories.join('・'),
     notes:      document.getElementById('notes').value.trim(),
     source:     'web_preregister'
+    business_type: selectedType ? selectedType.value : ''  
   };
 
   // ボタンをローディングに変更
