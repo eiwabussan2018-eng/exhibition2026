@@ -1117,13 +1117,17 @@ function validate() {
   if (!consent) {
     errConsent.classList.add('show');
     ok = false;
-  } else {
+ } else {
     errConsent.classList.remove('show');
   }
+
+  return ok;
+}
+
 // ===========================
-  // 送信処理
-  // ===========================
-  async function submitRegistration() {
+// 送信処理
+// ===========================
+async function submitRegistration() {
     if (!validate()) {
       showAlert('formAlert', 'error', '⚠️ 必須項目をご確認ください');
       const firstError = document.querySelector('.form-input.error');
