@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>永和物産 食品展示会2026 - 入場証</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+
+/* ===== 画面表示用スタイル ===== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+  background: #f0ebe0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 16px 60px;
+}
+
+.screen-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+.screen-header h1 {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 20px;
+  color: #0d1f5c;
+  margin-bottom: 6px;
+}
+.screen-header p {
+  font-size: 13px;
+  color: #666;
+  line-height: 1.7;
+}
+
+.print-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #c8a84b, #b8922e);
+  color: #0d1f5c;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: 'Noto Sans JP', sans-serif;
+  padding: 14px 32px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 0 auto 28px;
+  display: block;
+  text-align: center;
+  box-shadow: 0 4px 16px rgba(200,168,75,0.4);
+}
+.print-btn:hover { opacity: 0.9; }
+
+.hint-box {
+  background: #fff8e8;
+  border: 1px dashed #c8a84b;
+  border-radius: 8px;
+  padding: 14px 18px;
+  font-size: 13px;
+  color: #555;
+  line-height: 1.8;
+  margin-bottom: 24px;
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+}
+.hint-box strong { color: #0d1f5c; }
+
+/* ===== 入場証カード本体（画面プレビュー） ===== */
+.card-wrapper {
+  max-width: 600px;
+  width: 100%;
+  background: white;
+  border: 2px solid #0d1f5c;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(13,31,92,0.2);
+}
+
+/* ===== 上半分（表・首から下げる見える面） ===== */
+.card-top {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 280px;
+  border-bottom: 2px dashed #c8a84b;
+  position: relative;
+}
+
+/* 折り線ラベル（画面のみ表示） */
+.fold-label {
+  position: absolute;
+  bottom: -13px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #c8a84b;
+  color: #0d1f5c;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 12px;
+  border-radius: 10px;
+  white-space: nowrap;
+  z-index: 10;
+  letter-spacing: 1px;
+}
+
+/* 左パネル：来場者情報 + QR */
+.panel-left {
+  padding: 20px 16px 20px 20px;
+  border-right: 1px solid #e0d6c4;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.visitor-info .company-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0d1f5c;
+  line-height: 1.4;
+  margin-bottom: 2px;
+}
+.visitor-info .dept-name {
+  font-size: 11px;
+  color: #666;
+  margin-bottom: 6px;
+}
+.visitor-info .person-name {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #0d1f5c;
+  line-height: 1.2;
+}
+.visitor-info .person-name span {
+  font-size: 14px;
+  font-weight: 400;
+  margin-left: 3px;
+}
+
+.qr-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+.qr-inner {
+  border: 2px solid #0d1f5c;
+  border-radius: 6px;
+  padding: 6px;
+  background: white;
+  display: inline-block;
+}
+.qr-inner canvas,
+.qr-inner img { display: block; }
+
+.business-type-badge {
+  background: #0d1f5c;
+  color: #c8a84b;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 4px;
+  display: inline-block;
+  letter-spacing: 1px;
+}
+
+/* 右パネル：日付 + MAP */
+.panel-right {
+  padding: 20px 20px 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.event-header {
+  text-align: center;
+}
+.event-date {
+  font-size: 20px;
+  font-weight: 700;
+  color: #0d1f5c;
+  font-family: 'Noto Serif JP', serif;
+  line-height: 1.2;
+}
+.event-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0d1f5c;
+  margin-top: 4px;
+  letter-spacing: 1px;
+}
+.event-subtitle {
+  font-size: 10px;
+  color: #888;
+  letter-spacing: 2px;
+}
+
+.map-area {
+  flex: 1;
+  border: 1.5px dashed #c8a84b;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #faf7f0;
+  min-height: 140px;
+  color: #bbb;
+  font-size: 12px;
+  text-align: center;
+  line-height: 1.6;
+}
+
+/* ===== 下半分（裏・内側・今は空白） ===== */
+.card-bottom {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 200px;
+}
+
+.panel-bottom-left,
+.panel-bottom-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ddd;
+  font-size: 12px;
+}
+.panel-bottom-left {
+  border-right: 1px solid #e0d6c4;
+}
+
+/* 上下を区切るゴールドライン */
+.gold-divider {
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #c8a84b 20%, #c8a84b 80%, transparent);
+}
+
+/* ===== エラー表示 ===== */
+.error-page {
+  text-align: center;
+  padding: 60px 24px;
+  color: #666;
+}
+.error-page h2 { font-size: 20px; margin-bottom: 12px; color: #0d1f5c; }
+.error-page p { font-size: 14px; line-height: 1.8; }
+
+
+/* ===== 印刷用スタイル ===== */
+@media print {
+
+  /* 画面用UI要素を非表示 */
+  .screen-header,
+  .print-btn,
+  .hint-box,
+  .fold-label { display: none !important; }
+
+  body {
+    background: white;
+    padding: 0;
+    margin: 0;
+  }
+
+  /* A4ページ設定 */
+  @page {
+    size: A4 portrait;
+    margin: 10mm;
+  }
+
+  /* カードをA4いっぱいに広げる */
+  .card-wrapper {
+    max-width: 100%;
+    width: 100%;
+    box-shadow: none;
+    border: none;
+    border-radius: 0;
+    page-break-inside: avoid;
+  }
+
+  /* 上半分（表面）*/
+  .card-top {
+    min-height: 135mm;
+    border-bottom: 2px dashed #c8a84b;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* 下半分（裏面）*/
+  .card-bottom {
+    min-height: 110mm;
+  }
+
+  /* 色の印刷指定 */
+  .business-type-badge,
+  .event-date,
+  .event-title,
+  .company-name,
+  .person-name,
+  .panel-left,
+  .panel-right {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+</style>
+</head>
+<body>
+
+<!-- 画面用ヘッダー（印刷時は非表示） -->
+<div class="screen-header">
+  <h1>🎫 入場証・QRコード</h1>
+  <p>下のボタンで印刷できます。A4用紙を四つ折りにしてご利用ください。</p>
+</div>
+
+<button class="print-btn" onclick="window.print()">🖨️ この入場証を印刷する</button>
+
+<div class="hint-box">
+  <strong>印刷後の折り方：</strong>A4を横半分→さらに縦半分に折ると、<br>
+  QRコードが手前になる入場証カードになります。紐を通してご使用ください。
+</div>
+
+<!-- ===== 入場証カード本体 ===== -->
+<div class="card-wrapper" id="badgeCard">
+
+  <!-- 上半分：表面（首から下げて見える面） -->
+  <div class="card-top">
+
+    <!-- 左パネル：来場者情報 + QR -->
+    <div class="panel-left">
+      <div class="visitor-info">
+        <div class="company-name" id="companyName">読み込み中...</div>
+        <div class="dept-name" id="deptName"></div>
+        <div class="person-name" id="personName">　<span>様</span></div>
+      </div>
+
+      <div class="qr-box">
+        <div class="qr-inner" id="qrCode"></div>
+        <div class="business-type-badge" id="businessType"></div>
+      </div>
+    </div>
+
+    <!-- 右パネル：日付 + MAP -->
+    <div class="panel-right">
+      <div class="event-header">
+        <div class="event-date">11月</div>
+        <div class="event-title">永和物産展示会</div>
+        <div class="event-subtitle">FOOD EXHIBITION 2026</div>
+      </div>
+
+      <div class="map-area" id="mapArea">
+        展示会MAP<br>
+        <span style="font-size:10px;">（後で追加）</span>
+      </div>
+    </div>
+
+    <!-- 折り線ラベル（画面のみ） -->
+    <div class="fold-label">← ここで折る（四つ折りの中央）→</div>
+  </div>
+
+  <!-- ゴールドライン -->
+  <div class="gold-divider"></div>
+
+  <!-- 下半分：裏面（今は空白） -->
+  <div class="card-bottom">
+    <div class="panel-bottom-left">（今は空白）</div>
+    <div class="panel-bottom-right">（今は空白）</div>
+  </div>
+
+</div>
+
+<!-- エラー表示用（通常は非表示） -->
+<div class="error-page" id="errorPage" style="display:none;">
+  <h2>⚠️ 情報が読み込めませんでした</h2>
+  <p>URLが正しくない可能性があります。<br>メールのリンクを再度クリックしてお試しください。</p>
+</div>
+
+<script>
+// URLパラメータから来場者情報を取得
+function getParam(name) {
+  const params = new URLSearchParams(window.location.search);
+  return decodeURIComponent(params.get(name) || '');
+}
+
+const visitorId    = getParam('id');
+const visitorName  = getParam('name');
+const company      = getParam('company');
+const department   = getParam('department');
+const businessType = getParam('business_type');
+
+if (!visitorId || !visitorName) {
+  // パラメータがない場合はエラー表示
+  document.getElementById('badgeCard').style.display = 'none';
+  document.getElementById('errorPage').style.display = 'block';
+  document.querySelector('.print-btn').style.display = 'none';
+  document.querySelector('.hint-box').style.display = 'none';
+} else {
+  // 来場者情報を画面にセット
+  document.getElementById('companyName').textContent = company;
+  document.getElementById('deptName').textContent    = department;
+  document.getElementById('personName').innerHTML    = visitorName + '<span>　様</span>';
+  document.getElementById('businessType').textContent = businessType || '';
+
+  // 業態が空の場合はバッジを非表示
+  if (!businessType) {
+    document.getElementById('businessType').style.display = 'none';
+  }
+
+  // QRコード生成（IDをエンコードしたもの）
+  new QRCode(document.getElementById('qrCode'), {
+    text: visitorId,
+    width: 140,
+    height: 140,
+    colorDark: '#0d1f5c',
+    colorLight: '#ffffff'
+  });
+
+  // ページタイトルを更新
+  document.title = '入場証 - ' + visitorName + ' 様 | 永和物産食品展示会2026';
+}
+</script>
+</body>
+</html>
