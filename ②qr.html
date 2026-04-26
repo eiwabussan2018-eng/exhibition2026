@@ -5,424 +5,456 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>永和物産 食品展示会2026 - 入場証</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
+:root {
+  --navy: #0d1f5c;
+  --navy-mid: #1a3a9e;
+  --gold: #c8a84b;
+  --gold-light: #e8cc80;
+  --gold-pale: #f7f0dc;
+  --cream: #faf7f0;
+  --white: #ffffff;
+  --text: #1a1a2e;
+  --text-light: #6b6b8a;
+  --border: #ddd5be;
+}
 
-/* ===== 画面表示用スタイル ===== */
-* { margin: 0; padding: 0; box-sizing: border-box; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
 
 body {
   font-family: 'Noto Sans JP', sans-serif;
-  background: #f0ebe0;
+  background: var(--cream);
+  color: var(--text);
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 24px 16px 60px;
 }
 
-.screen-header {
-  text-align: center;
-  margin-bottom: 24px;
+/* ===== 画面表示用 ===== */
+.screen-only {
+  display: block;
 }
-.screen-header h1 {
+
+.hero {
+  background: linear-gradient(160deg, #0d1f5c 0%, #1a3a9e 100%);
+  color: white;
+  padding: 32px 20px 28px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(200,168,75,0.07) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+.hero-label {
+  font-size: 10px;
+  letter-spacing: 4px;
+  color: rgba(200,168,75,0.8);
+  margin-bottom: 8px;
+  font-weight: 600;
+  position: relative;
+}
+.hero h1 {
   font-family: 'Noto Serif JP', serif;
   font-size: 20px;
-  color: #0d1f5c;
-  margin-bottom: 6px;
-}
-.screen-header p {
-  font-size: 13px;
-  color: #666;
-  line-height: 1.7;
-}
-
-.print-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: linear-gradient(135deg, #c8a84b, #b8922e);
-  color: #0d1f5c;
-  font-size: 15px;
   font-weight: 700;
-  font-family: 'Noto Sans JP', sans-serif;
-  padding: 14px 32px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  margin: 0 auto 28px;
-  display: block;
-  text-align: center;
-  box-shadow: 0 4px 16px rgba(200,168,75,0.4);
-}
-.print-btn:hover { opacity: 0.9; }
-
-.hint-box {
-  background: #fff8e8;
-  border: 1px dashed #c8a84b;
-  border-radius: 8px;
-  padding: 14px 18px;
-  font-size: 13px;
-  color: #555;
-  line-height: 1.8;
-  margin-bottom: 24px;
-  max-width: 600px;
-  width: 100%;
-  text-align: center;
-}
-.hint-box strong { color: #0d1f5c; }
-
-/* ===== 入場証カード本体（画面プレビュー） ===== */
-.card-wrapper {
-  max-width: 600px;
-  width: 100%;
-  background: white;
-  border: 2px solid #0d1f5c;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 8px 32px rgba(13,31,92,0.2);
-}
-
-/* ===== 上半分（表・首から下げる見える面） ===== */
-.card-top {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  min-height: 280px;
-  border-bottom: 2px dashed #c8a84b;
+  color: white;
+  letter-spacing: 2px;
   position: relative;
 }
 
-/* 折り線ラベル（画面のみ表示） */
-.fold-label {
-  position: absolute;
-  bottom: -13px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #c8a84b;
-  color: #0d1f5c;
-  font-size: 10px;
-  font-weight: 700;
-  padding: 2px 12px;
-  border-radius: 10px;
-  white-space: nowrap;
-  z-index: 10;
-  letter-spacing: 1px;
+main {
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 24px 16px 60px;
 }
 
-/* 左パネル：来場者情報 + QR */
-.panel-left {
-  padding: 20px 16px 20px 20px;
-  border-right: 1px solid #e0d6c4;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.visitor-info .company-name {
-  font-size: 13px;
-  font-weight: 700;
-  color: #0d1f5c;
-  line-height: 1.4;
-  margin-bottom: 2px;
-}
-.visitor-info .dept-name {
-  font-size: 11px;
-  color: #666;
-  margin-bottom: 6px;
-}
-.visitor-info .person-name {
-  font-family: 'Noto Serif JP', serif;
-  font-size: 22px;
-  font-weight: 700;
-  color: #0d1f5c;
-  line-height: 1.2;
-}
-.visitor-info .person-name span {
-  font-size: 14px;
-  font-weight: 400;
-  margin-left: 3px;
-}
-
-.qr-box {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
-}
-.qr-inner {
-  border: 2px solid #0d1f5c;
-  border-radius: 6px;
-  padding: 6px;
+/* ===== 入場証カード（画面表示） ===== */
+.pass-card {
   background: white;
-  display: inline-block;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 40px rgba(13,31,92,0.18);
+  border: 1px solid var(--border);
+  margin-bottom: 20px;
 }
-.qr-inner canvas,
-.qr-inner img { display: block; }
 
-.business-type-badge {
-  background: #0d1f5c;
-  color: #c8a84b;
-  font-size: 11px;
+.pass-header {
+  background: linear-gradient(135deg, #0d1f5c 0%, #1a3a9e 100%);
+  padding: 20px;
+  text-align: center;
+  position: relative;
+}
+.pass-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+.pass-header-label {
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: rgba(200,168,75,0.8);
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+.pass-header-title {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 18px;
   font-weight: 700;
-  padding: 4px 10px;
-  border-radius: 4px;
+  color: white;
+  letter-spacing: 1px;
+}
+.pass-badge {
   display: inline-block;
+  background: rgba(200,168,75,0.2);
+  border: 1px solid rgba(200,168,75,0.4);
+  border-radius: 20px;
+  padding: 4px 14px;
+  font-size: 11px;
+  color: var(--gold-light);
+  margin-top: 8px;
   letter-spacing: 1px;
 }
 
-/* 右パネル：日付 + MAP */
-.panel-right {
-  padding: 20px 20px 20px 16px;
+.pass-body {
+  padding: 24px 20px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  align-items: center;
+  gap: 20px;
 }
 
-.event-header {
+.pass-qr-wrap {
+  background: white;
+  border: 2px solid var(--navy);
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 4px 16px rgba(13,31,92,0.12);
+}
+.pass-qr-wrap canvas,
+.pass-qr-wrap img {
+  display: block;
+}
+
+.pass-info {
+  width: 100%;
   text-align: center;
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
 }
-.event-date {
-  font-size: 20px;
-  font-weight: 700;
-  color: #0d1f5c;
+.pass-name {
   font-family: 'Noto Serif JP', serif;
-  line-height: 1.2;
-}
-.event-title {
-  font-size: 13px;
+  font-size: 26px;
   font-weight: 700;
-  color: #0d1f5c;
-  margin-top: 4px;
+  color: var(--navy);
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+.pass-company {
+  font-size: 14px;
+  color: #444;
+  margin-bottom: 3px;
+  font-weight: 500;
+}
+.pass-dept {
+  font-size: 13px;
+  color: var(--text-light);
+}
+.pass-id {
+  display: inline-block;
+  font-size: 11px;
+  color: var(--text-light);
+  border: 1px dashed var(--border);
+  padding: 3px 12px;
+  border-radius: 4px;
+  font-family: monospace;
+  margin-top: 10px;
   letter-spacing: 1px;
 }
-.event-subtitle {
-  font-size: 10px;
-  color: #888;
+
+.pass-footer {
+  background: var(--gold);
+  padding: 10px;
+  text-align: center;
+  font-size: 11px;
+  color: var(--navy);
+  font-weight: 700;
   letter-spacing: 2px;
 }
 
-.map-area {
-  flex: 1;
-  border: 1.5px dashed #c8a84b;
-  border-radius: 8px;
+/* ===== 案内ボックス ===== */
+.info-box {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 8px rgba(13,31,92,0.06);
+}
+.info-box h3 {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.info-row {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #faf7f0;
-  min-height: 140px;
-  color: #bbb;
-  font-size: 12px;
+  gap: 12px;
+  padding: 6px 0;
+  font-size: 13px;
+  border-bottom: 1px solid #f0ece4;
+  align-items: flex-start;
+}
+.info-row:last-child { border-bottom: none; }
+.info-icon { flex-shrink: 0; font-size: 15px; }
+.info-text { color: #444; line-height: 1.6; }
+
+/* ===== 印刷ボタン ===== */
+.btn-print {
+  display: block;
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, var(--gold) 0%, #b8922e 100%);
+  color: var(--navy);
+  font-size: 15px;
+  font-weight: 700;
+  font-family: inherit;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
   text-align: center;
-  line-height: 1.6;
+  box-shadow: 0 4px 16px rgba(200,168,75,0.35);
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.btn-print:hover {
+  background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 100%);
+  transform: translateY(-1px);
 }
 
-/* ===== 下半分（裏・内側・今は空白） ===== */
-.card-bottom {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  min-height: 200px;
-}
-
-.panel-bottom-left,
-.panel-bottom-right {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #ddd;
+.hint {
   font-size: 12px;
-}
-.panel-bottom-left {
-  border-right: 1px solid #e0d6c4;
-}
-
-/* 上下を区切るゴールドライン */
-.gold-divider {
-  height: 3px;
-  background: linear-gradient(90deg, transparent, #c8a84b 20%, #c8a84b 80%, transparent);
-}
-
-/* ===== エラー表示 ===== */
-.error-page {
+  color: var(--text-light);
   text-align: center;
-  padding: 60px 24px;
-  color: #666;
+  line-height: 1.7;
+  margin-bottom: 20px;
 }
-.error-page h2 { font-size: 20px; margin-bottom: 12px; color: #0d1f5c; }
-.error-page p { font-size: 14px; line-height: 1.8; }
 
+/* ===== エラー・ローディング ===== */
+.loading {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-light);
+}
+.spinner {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--border);
+  border-top-color: var(--navy);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 12px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.error-box {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+  color: #991b1b;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+footer {
+  text-align: center;
+  padding: 16px;
+  font-size: 11px;
+  color: var(--text-light);
+  border-top: 1px solid var(--border);
+}
 
 /* ===== 印刷用スタイル ===== */
 @media print {
+  * { margin: 0 !important; padding: 0 !important; }
 
-  /* 画面用UI要素を非表示 */
-  .screen-header,
-  .print-btn,
-  .hint-box,
-  .fold-label { display: none !important; }
+  .hero, .screen-only, footer,
+  .info-box, .btn-print, .hint { display: none !important; }
 
-  body {
-    background: white;
-    padding: 0;
-    margin: 0;
-  }
+  body { background: white; }
+  main { padding: 0 !important; max-width: 100% !important; }
 
-  /* A4ページ設定 */
-  @page {
-    size: A4 portrait;
-    margin: 10mm;
-  }
-
-  /* カードをA4いっぱいに広げる */
-  .card-wrapper {
-    max-width: 100%;
-    width: 100%;
-    box-shadow: none;
-    border: none;
-    border-radius: 0;
+  .pass-card {
+    width: 105mm;
+    min-height: 148mm;
+    margin: 0 auto !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
     page-break-inside: avoid;
   }
 
-  /* 上半分（表面）*/
-  .card-top {
-    min-height: 135mm;
-    border-bottom: 2px dashed #c8a84b;
+  .pass-header {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    padding: 14px !important;
+  }
+  .pass-footer {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
-
-  /* 下半分（裏面）*/
-  .card-bottom {
-    min-height: 110mm;
-  }
-
-  /* 色の印刷指定 */
-  .business-type-badge,
-  .event-date,
-  .event-title,
-  .company-name,
-  .person-name,
-  .panel-left,
-  .panel-right {
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+  .pass-body {
+    padding: 16px !important;
   }
 }
-
 </style>
 </head>
 <body>
 
-<!-- 画面用ヘッダー（印刷時は非表示） -->
-<div class="screen-header">
-  <h1>🎫 入場証・QRコード</h1>
-  <p>下のボタンで印刷できます。A4用紙を四つ折りにしてご利用ください。</p>
+<!-- ヘッダー（画面のみ） -->
+<div class="hero screen-only">
+  <div class="hero-label">EIWA BUSSAN FOOD EXHIBITION 2026</div>
+  <h1>入場証</h1>
 </div>
 
-<button class="print-btn" onclick="window.print()">🖨️ この入場証を印刷する</button>
+<main>
 
-<div class="hint-box">
-  <strong>印刷後の折り方：</strong>A4を横半分→さらに縦半分に折ると、<br>
-  QRコードが手前になる入場証カードになります。紐を通してご使用ください。
-</div>
+  <!-- ローディング中 -->
+  <div class="loading" id="loadingArea">
+    <div class="spinner"></div>
+    <div>入場証を準備しています...</div>
+  </div>
 
-<!-- ===== 入場証カード本体 ===== -->
-<div class="card-wrapper" id="badgeCard">
+  <!-- エラー表示 -->
+  <div class="error-box" id="errorArea" style="display:none;">
+    URLが正しくありません。<br>
+    メールに記載のリンクから開き直してください。<br><br>
+    <small>お名前・会社名をスタッフにお伝えいただければ当日もご入場いただけます。</small>
+  </div>
 
-  <!-- 上半分：表面（首から下げて見える面） -->
-  <div class="card-top">
+  <!-- 入場証本体 -->
+  <div id="passArea" style="display:none;">
 
-    <!-- 左パネル：来場者情報 + QR -->
-    <div class="panel-left">
-      <div class="visitor-info">
-        <div class="company-name" id="companyName">読み込み中...</div>
-        <div class="dept-name" id="deptName"></div>
-        <div class="person-name" id="personName">　<span>様</span></div>
+    <!-- 入場証カード -->
+    <div class="pass-card" id="passCard">
+      <div class="pass-header">
+        <div class="pass-header-label">EIWA BUSSAN FOOD EXHIBITION 2026</div>
+        <div class="pass-header-title">永和物産 食品展示会 2026</div>
+        <div class="pass-badge">入場証</div>
       </div>
+      <div class="pass-body">
+        <div class="pass-qr-wrap">
+          <div id="qrCode"></div>
+        </div>
+        <div class="pass-info">
+          <div class="pass-name" id="passName">—</div>
+          <div class="pass-company" id="passCompany">—</div>
+          <div class="pass-dept" id="passDept"></div>
+          <div class="pass-id" id="passId">—</div>
+        </div>
+      </div>
+      <div class="pass-footer">ご来場ありがとうございます</div>
+    </div>
 
-      <div class="qr-box">
-        <div class="qr-inner" id="qrCode"></div>
-        <div class="business-type-badge" id="businessType"></div>
+    <!-- 印刷ボタン（画面のみ） -->
+    <button class="btn-print screen-only" onclick="window.print()">
+      印刷する（A4四つ折りで名札サイズ）
+    </button>
+    <p class="hint screen-only">
+      A4用紙に印刷して四つ折りにすると、ネームホルダーにちょうど入るサイズになります。<br>
+      当日QRコードをスタッフにかざしてください。
+    </p>
+
+    <!-- 当日の流れ（画面のみ） -->
+    <div class="info-box screen-only">
+      <h3>当日の受付について</h3>
+      <div class="info-row">
+        <span class="info-icon">【印刷】</span>
+        <span class="info-text">この入場証を印刷してお持ちください（受付が最もスムーズです）</span>
+      </div>
+      <div class="info-row">
+        <span class="info-icon">【スマホ】</span>
+        <span class="info-text">印刷がない場合はスマートフォンでこの画面を開いてQRコードを表示してください</span>
+      </div>
+      <div class="info-row">
+        <span class="info-icon">【当日】</span>
+        <span class="info-text">QRコードをお忘れの場合はお名前・会社名をスタッフにお伝えください</span>
       </div>
     </div>
 
-    <!-- 右パネル：日付 + MAP -->
-    <div class="panel-right">
-      <div class="event-header">
-        <div class="event-date">11月</div>
-        <div class="event-title">永和物産展示会</div>
-        <div class="event-subtitle">FOOD EXHIBITION 2026</div>
-      </div>
+  </div><!-- /passArea -->
 
-      <div class="map-area" id="mapArea">
-        展示会MAP<br>
-        <span style="font-size:10px;">（後で追加）</span>
-      </div>
-    </div>
+</main>
 
-    <!-- 折り線ラベル（画面のみ） -->
-    <div class="fold-label">← ここで折る（四つ折りの中央）→</div>
-  </div>
-
-  <!-- ゴールドライン -->
-  <div class="gold-divider"></div>
-
-  <!-- 下半分：裏面（今は空白） -->
-  <div class="card-bottom">
-    <div class="panel-bottom-left">（今は空白）</div>
-    <div class="panel-bottom-right">（今は空白）</div>
-  </div>
-
-</div>
-
-<!-- エラー表示用（通常は非表示） -->
-<div class="error-page" id="errorPage" style="display:none;">
-  <h2>⚠️ 情報が読み込めませんでした</h2>
-  <p>URLが正しくない可能性があります。<br>メールのリンクを再度クリックしてお試しください。</p>
-</div>
+<footer class="screen-only">
+  永和物産株式会社 &nbsp;|&nbsp; 食品展示会2026事務局<br>
+  ※QRコードは（株）デンソーウェーブの登録商標です
+</footer>
 
 <script>
 // URLパラメータから来場者情報を取得
 function getParam(name) {
-  const params = new URLSearchParams(window.location.search);
-  return decodeURIComponent(params.get(name) || '');
+  const url = new URL(window.location.href);
+  return url.searchParams.get(name) || '';
 }
 
-const visitorId    = getParam('id');
-const visitorName  = getParam('name');
-const company      = getParam('company');
-const department   = getParam('department');
-const businessType = getParam('business_type');
+function init() {
+  const id          = getParam('id');
+  const name        = decodeURIComponent(getParam('name'));
+  const company     = decodeURIComponent(getParam('company'));
+  const department  = decodeURIComponent(getParam('department'));
 
-if (!visitorId || !visitorName) {
-  // パラメータがない場合はエラー表示
-  document.getElementById('badgeCard').style.display = 'none';
-  document.getElementById('errorPage').style.display = 'block';
-  document.querySelector('.print-btn').style.display = 'none';
-  document.querySelector('.hint-box').style.display = 'none';
-} else {
-  // 来場者情報を画面にセット
-  document.getElementById('companyName').textContent = company;
-  document.getElementById('deptName').textContent    = department;
-  document.getElementById('personName').innerHTML    = visitorName + '<span>　様</span>';
-  document.getElementById('businessType').textContent = businessType || '';
+  document.getElementById('loadingArea').style.display = 'none';
 
-  // 業態が空の場合はバッジを非表示
-  if (!businessType) {
-    document.getElementById('businessType').style.display = 'none';
+  // IDがない場合はエラー表示
+  if (!id || !name || !company) {
+    document.getElementById('errorArea').style.display = 'block';
+    return;
   }
 
-  // QRコード生成（IDをエンコードしたもの）
+  // 入場証に情報をセット
+  document.getElementById('passName').textContent    = name;
+  document.getElementById('passCompany').textContent = company;
+  document.getElementById('passDept').textContent    = department || '';
+  document.getElementById('passId').textContent      = id;
+
+  // ページタイトルも変更
+  document.title = `入場証 - ${name} 様 | 永和物産 食品展示会2026`;
+
+  // QRコード生成
   new QRCode(document.getElementById('qrCode'), {
-    text: visitorId,
-    width: 140,
-    height: 140,
+    text: id,
+    width: 180,
+    height: 180,
     colorDark: '#0d1f5c',
-    colorLight: '#ffffff'
+    colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.M
   });
 
-  // ページタイトルを更新
-  document.title = '入場証 - ' + visitorName + ' 様 | 永和物産食品展示会2026';
+  // 入場証エリアを表示
+  document.getElementById('passArea').style.display = 'block';
 }
+
+// ページ読み込み時に実行
+window.addEventListener('load', init);
 </script>
 </body>
 </html>
