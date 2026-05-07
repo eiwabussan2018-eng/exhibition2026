@@ -222,6 +222,7 @@ main { max-width: 560px; margin: 0 auto; padding: 28px 16px 60px; }
   background: var(--white); border-radius: var(--radius-lg);
   padding: 36px 24px; text-align: center;
   box-shadow: var(--shadow-lg); border: 1px solid var(--border); margin-bottom: 20px;
+  display: flex; flex-direction: column; align-items: center;
 }
 .complete-mark {
   width: 72px; height: 72px;
@@ -460,7 +461,7 @@ footer {
         <div id="completeQR"></div>
       </div>
       <p class="qr-label" style="margin-bottom:16px;">このQRコードを当日受付でご提示ください</p>
-      <div class="complete-id">
+      <div class="complete-id" style="display:block;text-align:center;width:100%;">
         来場者ID<br>
         <strong id="completeId"></strong>
       </div>
@@ -480,7 +481,7 @@ footer {
 
 <script>
 // ===== GAS URL =====
-const GAS_URL = '';https://script.google.com/macros/s/AKfycbxlPYhPHWC9icWvbZOPlixp-RM6KbCdFuxC5G76bnvDlywLOOW8mz_JicF6PWcxR74j/exec
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbyPXwitOCCjEixIZIJOBivlX8FsZIsy9K5FBOCkJzOv06oWRaSzzxvwZgSginv4kaGT/exec';
 
 // ===== 郵便番号から住所自動入力 =====
 async function fetchAddress() {
